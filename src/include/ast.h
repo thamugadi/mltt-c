@@ -331,6 +331,5 @@ char* strdup (const char *s);
 
 void shift(Expr* expr, int d, int cutoff);
 Expr* shift_expr(Expr* expr, int d, int cutoff);
-Expr* subst(Expr* expr, debruijn n, Expr* r);
 
 Expr* subst_top(Expr* expr, Expr* r);

@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+// todo: optimize subst
+
 // this strdup definition was copypasted from somewhere
 char* strdup(const char* s)
 {
@@ -12,6 +14,7 @@ char* strdup(const char* s)
     return NULL;
   return (char*)memcpy(new, s, len);
 }
+
 bool cmp_expr(Expr* expr1, Expr* expr2)
 {
   bool cond1, cond2, cond3, cond4;
@@ -404,8 +407,8 @@ Expr* subst_1(Expr* expr, debruijn n, Expr* r, debruijn acc)
     }
     else if (expr->var.index > n+acc)
     {
-      //
-      return copy_expr(expr);
+      // possible to optimize
+      return copy_expr(expr); 
     }
     else
     {
@@ -527,8 +530,8 @@ Expr* subst_top(Expr* expr, Expr* r)
   Expr* cp_expr = copy_expr(expr);
   Expr* shift_r = shift_expr(r, 1, 0);
   Expr* subst_sr = subst(cp_expr, 0, shift_r);
+  shift(subst_sr, -1, 0);
   free_expr(shift_r);
   free_expr(cp_expr);
-  shift(subst_sr, -1, 0);
   return subst_sr;
 }

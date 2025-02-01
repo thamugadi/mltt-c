@@ -21,7 +21,7 @@ Expr* normalize(Expr* expr, var_env_t* var_env)
   return normalize_1(expr, var_env);
 }
 
-// UB if not well-typed (i think?)
+// UB if not well-typed
 Expr* normalize_1(Expr* expr, var_env_t* var_env)
 {
   if (expr->tag == DEF)

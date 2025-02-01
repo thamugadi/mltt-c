@@ -291,11 +291,13 @@ Expr* type_infer_w(Expr* w, var_env_t* var_env)
   Expr* type_C = NULL;
   Expr* normal_C = NULL;
   Expr* A_type = NULL;
+  var_env_t* new_env = NULL;
+
   type_C = type_infer(w->w.C, var_env);
   FAIL_IF_NOT(type_C, "todo:msg_36");
   FAIL_IF_NOT(type_C->tag == TYPE, "todo:msg_37");
 
-  var_env_t* new_env = add_type(w->w.C, var_env);
+  new_env = add_type(w->w.C, var_env);
   A_type = type_infer(w->w.family, new_env);
   FAIL_IF_NOT(A_type->tag == TYPE, "todo:msg_5000");
   level_t lv = (type_C->type.level > A_type->type.level)
@@ -309,6 +311,8 @@ Expr* type_infer_w(Expr* w, var_env_t* var_env)
   return make_type(lv);
   
 error:
+  if (new_env)
+    free_var_env_until(new_env, var_env);
   if (type_C)
     free_expr(type_C);
   if (normal_C)
@@ -326,6 +330,7 @@ Expr* type_infer_tree(Expr* tree, var_env_t* var_env)
   Expr* type_A = NULL;
   Expr* res_type = NULL;
   Expr* normal_res_type = NULL;
+  var_env_t* new_env = NULL;
 
   type_C = type_infer(tree->tree.root, var_env);
   FAIL_IF_NOT(type_C, "todo:msg_45");
@@ -338,7 +343,7 @@ Expr* type_infer_tree(Expr* tree, var_env_t* var_env)
   FAIL_IF_NOT(subtr_type->tag == PI, "todo:msg_48");
   FAIL_IF_NOT(subtr_type->pi.cod->tag == W, "todo:msg_49");
 
-  var_env_t* new_env = add_type(subtr_type->pi.cod->w.C, var_env);
+  new_env = add_type(subtr_type->pi.cod->w.C, var_env);
   type_A = type_infer(subtr_type->pi.cod->w.family, new_env);
   free_var_env_until(new_env, var_env);
 
@@ -358,6 +363,7 @@ Expr* type_infer_tree(Expr* tree, var_env_t* var_env)
   free_expr(type_A);
   return normal_res_type;
 error:
+  if (new_env) free_var_env_until(new_env, var_env);
   if (type_C) free_expr(type_C);
   if (normal_C) free_expr(normal_C);
   if (subtr_type) free_expr(subtr_type);
@@ -593,6 +599,7 @@ Expr* type_infer(Expr* term, var_env_t* var_env)
 
 bool type_check(Expr* term, Expr* type, var_env_t* var_env)
 {
+  //TODO: free expressions before returning false
   if (term->tag == LAM)
   {
     if (type->tag != PI)
@@ -608,9 +615,6 @@ bool type_check(Expr* term, Expr* type, var_env_t* var_env)
 
     bool res = type_check(term->lam.expr, normal_cod, new_env);
 
-    if (!res)
-    {
-    }
     free_var_env_until(new_env, var_env);
     free_expr(normal_dom);
     free_expr(normal_cod);
