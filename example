@@ -1,33 +1,20 @@
-# mltt-c 
-this is a WIP implementation of a language based on Martin-Löf type theory + W-types in C. it's still poorly tested.
+def7 : exists (x : bool), bool
+def7 = [false, false] : exists (x : bool), bool
 
-**todo:**
-- W-types recursors
-- writing tests
-- writing a good readme file
-- J-rule
-- removing memory leaks after erros
-- decent error messages
-- pretty printing (no de bruijn)
-- allowing recursive definitions
-- implementing some features on the top (pattern matching?)
-
-# Usage
-```
-mltt file_name
-```
-
-# Example
-
-```
 id_type0 : forall (t : Type 0) (x : bool), Type 0
 id_type0 t x = t
 
 id_type1 : forall (t : Type 1) (x : bool), Type 1
 id_type1 t x = t
 
+rec2_0 : forall (C : Type 0) (x : C) (y : C) (z : bool), C
+rec2_0 C x y z = ind2 (id_type0 C) x y z
+
 rec2_1 : forall (C : Type 1) (x : C) (y : C) (z : bool), C
 rec2_1 C x y z = ind2 (id_type1 C) x y z
+
+if_then_else : forall (A : Type 0) (B : bool) (X : A) (Y : A), A
+if_then_else A B X Y = rec2_0 A X Y B
 
 id_type0_void : forall (t : Type 0) (x : void), Type 0
 id_type0_void t x = t
@@ -40,6 +27,9 @@ rec0_0 C x = ind0 (id_type0_void C) x
 
 zero_subtr : forall (x : void), nat
 zero_subtr x = rec0_0 nat x 
+
+bar : forall (x : void), nat
+bar = zero_subtr
 
 nat0 : nat
 nat0 = tree void zero_subtr
@@ -58,4 +48,4 @@ suc n = tree one (take1 n)
 
 nat5 : nat
 nat5 = suc (suc (suc (suc (suc nat0))))
-```
+
