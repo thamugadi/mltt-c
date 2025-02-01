@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-//todo: remove the memory leaks in the error case
+//todo: free new env in error case
 
 #define FAIL_IF_NOT(cond, msg)                                                 \
   do                                                                           \
@@ -100,7 +100,7 @@ error:
   if (f_type) free_expr(f_type);
   if (arg_type) free_expr(arg_type);
   if (res_type) free_expr(res_type);
-  if (normal_res_type) free_expr(res_type);
+  if (normal_res_type) free_expr(normal_res_type);
   return NULL;
 }
 
@@ -314,8 +314,6 @@ Expr* type_infer_w(Expr* w, var_env_t* var_env)
   return make_type(lv);
   
 error:
-  print_ast(A_type);
-  exit(0);
   if (type_C)
     free_expr(type_C);
   if (normal_C)

@@ -53,7 +53,7 @@ one_subtr x = nat0
 nat1 : nat
 nat1 = tree one one_subtr
 
-take1 : forall (u : nat) (n : one), nat
+take1 : forall (n : nat) (u : one), nat
 take1 n u = n
 
 suc : forall (n : nat), nat
