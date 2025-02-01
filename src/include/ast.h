@@ -8,25 +8,25 @@ typedef uint8_t tag_t;
 enum
 {
   VARFREE,
-  VAR, // bound variables (make_var)
-  TYPE, // Type n (make_type)
-  ZERO, ONE, UNIT, TWO, FALSE_T, TRUE_T, // empty, one, unit, bool, false, true
-  APP, // a b (make_app)
-  LAM, // lambda x y : something, x (make_lam)
-  PI, // forall x y : something, f x y (make_pi)
-  SIG, // exists a b : something, g b a (make_sig)
-  PAIR, // [a, b] (make_pair)
-  FST, // fst something (make_fst)
-  SND, // snd something (make_snd)
-  ID, // eq ty a b (make_id)
-  REFL, // refl a b (make_refl)
-  J, // J a b c d (make_j)
-  W, // W a f (make_W)
-  TREE, // tree a b (make_tree)
-  REC, // rec a b c (make_rec)
-  IND0, // rec0 a b (make_rec0)
-  IND1, // rec1 a b c (make_rec1)
-  IND2 // rec2 a b c d (make_rec2)
+  VAR,
+  TYPE,
+  ZERO, ONE, UNIT, TWO, FALSE_T, TRUE_T, 
+  APP, 
+  LAM, 
+  PI, 
+  SIG, 
+  PAIR, 
+  FST, 
+  SND,
+  ID,
+  REFL,
+  J, 
+  W,
+  TREE,
+  REC,
+  IND0,
+  IND1,
+  IND2 
 };
 
 typedef struct __attribute__((packed)) Expr Expr;
