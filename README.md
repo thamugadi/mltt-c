@@ -1,5 +1,6 @@
 # mltt-c 
 this is a WIP implementation of a language based on Martin-Löf type theory + W-types in C. it's still poorly tested.
+don't hesitate to let me know if some cases wouldn't work :)
 
 **todo:**
 - W-types recursors
