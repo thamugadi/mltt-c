@@ -40,9 +40,9 @@ Expr* type_infer_var(Expr* var, var_env_t* var_env)
 error:
   return NULL;
 }
-Expr* type_infer_varfree(Expr* var, var_env_t* var_env)
+Expr* type_infer_def(Expr* var, var_env_t* var_env)
 {
-  Expr* type = get_type_hashmap(var->varfree.name);
+  Expr* type = get_type_hashmap(var->def.name);
   FAIL_IF_NOT(type, "todo:msg_2");
   return copy_expr(type);
 error:
@@ -523,9 +523,9 @@ Expr* type_infer(Expr* term, var_env_t* var_env)
   {
     return type_infer_var(term, var_env);
   }
-  else if (term->tag == VARFREE)
+  else if (term->tag == DEF)
   {
-    return type_infer_varfree(term, var_env);
+    return type_infer_def(term, var_env);
   }
   else if (term->tag == ID)
   {

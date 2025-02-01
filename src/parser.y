@@ -177,8 +177,8 @@ IDENT
     char* name = $1;
     if (!get_debruijn(*vts, name, &ind))
     {
-        Expr* varfree = make_varfree(name, false);
-        $$ = varfree;
+        Expr* def= make_def(name, false);
+        $$ = def;
     }
     else
     {

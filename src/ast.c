@@ -56,9 +56,9 @@ bool cmp_expr(Expr* expr1, Expr* expr2)
   {
     return (expr1->var.index == expr2->var.index);
   }
-  if (expr1->tag == VARFREE)
+  if (expr1->tag == DEF)
   {
-    return (!strcmp(expr1->varfree.name, expr2->varfree.name));
+    return (!strcmp(expr1->def.name, expr2->def.name));
   }
   if (expr1->tag == TYPE)
   {
@@ -170,14 +170,14 @@ inline Expr* make_type(level_t level)
   node->type.level = level;
   return node;
 }
-Expr* make_varfree(char* name, bool copy)
+Expr* make_def(char* name, bool copy)
 {
   Expr* node = calloc(1, sizeof(Expr));
-  node->tag = VARFREE;
+  node->tag = DEF;
   if (copy)
-    node->varfree.name = strdup(name);
+    node->def.name = strdup(name);
   else
-    node->varfree.name = name;
+    node->def.name = name;
   return node;
 }
 

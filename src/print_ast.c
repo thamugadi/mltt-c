@@ -9,9 +9,9 @@
 void print_ast(Expr* expr)
 {
   if (!expr) return;
-  if (expr->tag == VARFREE)
+  if (expr->tag == DEF)
   {
-    printf("%s", expr->varfree.name);
+    printf("%s", expr->def.name);
     return;
   }
   if (expr->tag == VAR)

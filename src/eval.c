@@ -24,9 +24,9 @@ Expr* normalize(Expr* expr, var_env_t* var_env)
 // UB if not well-typed (i think?)
 Expr* normalize_1(Expr* expr, var_env_t* var_env)
 {
-  if (expr->tag == VARFREE)
+  if (expr->tag == DEF)
   {
-    return copy_expr(get_term_hashmap(expr->varfree.name));
+    return copy_expr(get_term_hashmap(expr->def.name));
   }
   else if (expr->tag <= TRUE_T)
   {

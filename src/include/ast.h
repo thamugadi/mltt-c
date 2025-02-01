@@ -7,7 +7,7 @@ typedef uint32_t debruijn;
 typedef uint8_t tag_t;
 enum
 {
-  VARFREE,
+  DEF,
   VAR,
   TYPE,
   ZERO, ONE, UNIT, TWO, FALSE_T, TRUE_T, 
@@ -37,10 +37,10 @@ typedef struct __attribute__((packed)) Var_data
   debruijn index;
 } Var_data;
 
-typedef struct __attribute__((packed)) Varfree_data
+typedef struct __attribute__((packed)) Def_data
 {
   char* name;
-} Varfree_data;
+} Def_data;
 
 typedef struct __attribute__((packed)) Type_data
 {
@@ -156,7 +156,7 @@ typedef struct __attribute__((packed)) Expr
   {
     struct __attribute__((packed)) Var_data var;
     struct __attribute__((packed)) Type_data type;
-    struct __attribute__((packed)) Varfree_data varfree;
+    struct __attribute__((packed)) Def_data def;
     struct __attribute__((packed)) App_data app;
     struct __attribute__((packed)) Pi_data pi;
     struct __attribute__((packed)) Lam_data lam;
@@ -183,7 +183,7 @@ Expr* make_expr_3(tag_t tag, Expr* arg1, Expr* arg2, Expr* arg3, bool copy);
 Expr* make_expr_4(tag_t tag, Expr* arg1, Expr* arg2, Expr* arg3, Expr* arg4, bool copy);
 
 Expr* make_var(debruijn debruijn, char* name, bool copy);
-Expr* make_varfree(char* name, bool copy);
+Expr* make_def(char* name, bool copy);
 Expr* make_type(level_t level);
 
 inline  Expr* make_zero(void)
