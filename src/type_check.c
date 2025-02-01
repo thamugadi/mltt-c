@@ -110,7 +110,7 @@ Expr* type_infer_pi(Expr* pi, var_env_t* var_env)
   FAIL_IF_NOT(dom_type, "todo:msg_11");
   FAIL_IF_NOT(dom_type->tag == TYPE, "todo:msg_12");
 
-  normal_dom = normalize(pi->pi.dom, var_env);
+  normal_dom = normalize_1(pi->pi.dom, var_env);
   FAIL_IF_NOT(normal_dom, "todo:msg_13");
 
   new_env = add_type(normal_dom, var_env);
@@ -152,7 +152,7 @@ Expr* type_infer_sig(Expr* sig, var_env_t* var_env)
   FAIL_IF_NOT(fty_type, "todo:msg_17");
   FAIL_IF_NOT(fty_type->tag == TYPE, "todo:msg_18");
 
-  normal_fty = normalize(sig->sig.f_ty, var_env);
+  normal_fty = normalize_1(sig->sig.f_ty, var_env);
   FAIL_IF_NOT(normal_fty, "todo:msg_19");
 
   new_env = add_type(normal_fty, var_env);
@@ -221,7 +221,7 @@ Expr* type_infer_snd(Expr* expr, var_env_t* var_env)
   fst_e = make_fst(expr->snd.expr, true);
   FAIL_IF_NOT(fst_e, "todo:msg_26");
 
-  normal_fst = normalize(fst_e, var_env);
+  normal_fst = normalize_1(fst_e, var_env);
   FAIL_IF_NOT(normal_fst, "todo:msg_27");
 
   fst_e_type = type_infer(normal_fst, var_env);
