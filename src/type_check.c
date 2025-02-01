@@ -21,12 +21,12 @@
     }                                                                          \
   } while (0)
 
-inline Expr* type_infer_zero() { return make_type(0); }
-inline Expr* type_infer_one() { return make_type(0); }
-inline Expr* type_infer_two() { return make_type(0); }
-inline Expr* type_infer_unit() { return make_one(); }
-inline Expr* type_infer_false() { return make_two(); }
-inline Expr* type_infer_true() { return make_two(); }
+Expr* type_infer_zero() { return make_type(0); }
+Expr* type_infer_one() { return make_type(0); }
+Expr* type_infer_two() { return make_type(0); }
+Expr* type_infer_unit() { return make_one(); }
+Expr* type_infer_false() { return make_two(); }
+Expr* type_infer_true() { return make_two(); }
 
 Expr* type_infer_type(Expr* type) { return make_type(1 + type->type.level); }
 
@@ -77,15 +77,12 @@ error:
 Expr* type_infer_app(Expr* app, var_env_t* var_env)
 {
   Expr* f_type = NULL;
-  Expr* arg_type = NULL;
   Expr* res_type = NULL;
   Expr* normal_res_type = NULL;
   f_type = type_infer(app->app.left, var_env);
   FAIL_IF_NOT(f_type, "todo:1001");
   FAIL_IF_NOT(f_type->tag == PI, "todo:1002");
   
-  arg_type = type_infer(app->app.right, var_env);
-  FAIL_IF_NOT(arg_type, "todo:1003");
   bool res = type_check(app->app.right, f_type->pi.dom, var_env);
   FAIL_IF_NOT(res, "todo:1004");
 
@@ -93,12 +90,10 @@ Expr* type_infer_app(Expr* app, var_env_t* var_env)
   normal_res_type = normalize_1(res_type, var_env);
   
   free_expr(res_type);
-  free_expr(arg_type);
   free_expr(f_type);
   return normal_res_type;
 error:
   if (f_type) free_expr(f_type);
-  if (arg_type) free_expr(arg_type);
   if (res_type) free_expr(res_type);
   if (normal_res_type) free_expr(normal_res_type);
   return NULL;

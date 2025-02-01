@@ -163,7 +163,7 @@ Expr* make_expr_4(tag_t tag, Expr* arg1, Expr* arg2, Expr* arg3, Expr* arg4,
   return node;
 }
 
-inline Expr* make_type(level_t level)
+Expr* make_type(level_t level)
 {
   Expr* node = calloc(1, sizeof(Expr));
   node->tag = TYPE;
@@ -517,7 +517,7 @@ Expr* subst_1(Expr* expr, debruijn n, Expr* r, debruijn acc)
   return NULL;
 }
 
-inline Expr* subst(Expr* expr, debruijn n, Expr* r)
+Expr* subst(Expr* expr, debruijn n, Expr* r)
 {
   return subst_1(expr, n, r, 0);
 }

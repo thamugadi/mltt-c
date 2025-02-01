@@ -186,123 +186,123 @@ Expr* make_var(debruijn debruijn, char* name, bool copy);
 Expr* make_def(char* name, bool copy);
 Expr* make_type(level_t level);
 
-inline  Expr* make_zero(void)
+static inline  Expr* make_zero(void)
 {
   return make_expr_0(ZERO);
 }
 
-inline  Expr* make_one(void)
+static inline  Expr* make_one(void)
 {
   return make_expr_0(ONE);
 }
 
-inline  Expr* make_unit(void)
+static inline  Expr* make_unit(void)
 {
   return make_expr_0(UNIT);
 }
 
-inline  Expr* make_two(void)
+static inline  Expr* make_two(void)
 {
   return make_expr_0(TWO);
 }
 
-inline  Expr* make_false(void)
+static inline  Expr* make_false(void)
 {
   return make_expr_0(FALSE_T);
 }
 
-inline  Expr* make_true(void)
+static inline  Expr* make_true(void)
 {
   return make_expr_0(TRUE_T);
 }
 
-inline  Expr* make_fst(Expr* expr, bool copy)
+static inline  Expr* make_fst(Expr* expr, bool copy)
 {
   return make_expr_1(FST, expr, copy);
 }
 
-inline  Expr* make_snd(Expr* expr, bool copy)
+static inline  Expr* make_snd(Expr* expr, bool copy)
 {
   return make_expr_1(SND, expr, copy);
 }
 
-inline  Expr* make_app(Expr* left, Expr* right,
+static inline  Expr* make_app(Expr* left, Expr* right,
                                                      bool copy)
 {
   return make_expr_2(APP, left, right, copy);
 }
 
-inline  Expr* make_lam(Expr* type_annot, Expr* expr,
+static inline  Expr* make_lam(Expr* type_annot, Expr* expr,
                                                      bool copy)
 {
   return make_expr_2(LAM, type_annot, expr, copy);
 }
 
-inline  Expr* make_pi(Expr* dom, Expr* cod,
+static inline  Expr* make_pi(Expr* dom, Expr* cod,
                                                     bool copy)
 {
   return make_expr_2(PI, dom, cod, copy);
 }
 
-inline  Expr* make_sig(Expr* f_ty, Expr* family, 
+static inline  Expr* make_sig(Expr* f_ty, Expr* family, 
                                                      bool copy)
 {
   return make_expr_2(SIG, f_ty, family, copy);
 }
 
-inline  Expr* make_pair(Expr* type_annot, Expr* a, Expr* b,
+static inline  Expr* make_pair(Expr* type_annot, Expr* a, Expr* b,
                                                       bool copy)
 {
   return make_expr_3(PAIR, type_annot, a, b, copy);
 }
 
-inline  Expr* make_w(Expr* C, Expr* family,
+static inline  Expr* make_w(Expr* C, Expr* family,
                                                    bool copy)
 {
   return make_expr_2(W, C, family, copy);
 }
 
-inline  Expr* make_tree(Expr* root, Expr* subtr,
+static inline  Expr* make_tree(Expr* root, Expr* subtr,
                                                       bool copy)
 {
   return make_expr_2(TREE, root, subtr, copy);
 }
 
-inline  Expr* make_id(Expr* ty, Expr* a, Expr* b,
+static inline  Expr* make_id(Expr* ty, Expr* a, Expr* b,
                                                     bool copy)
 {
   return make_expr_3(ID, ty, a, b, copy);
 }
 
-inline  Expr* make_refl(Expr* ty, Expr* a, bool copy)
+static inline  Expr* make_refl(Expr* ty, Expr* a, bool copy)
 {
   return make_expr_2(REFL, ty, a, copy);
 }
 
-inline  Expr* make_j(Expr* t, Expr* a, Expr* b, Expr* p, bool copy)
+static inline  Expr* make_j(Expr* t, Expr* a, Expr* b, Expr* p, bool copy)
 {
   return make_expr_4(J, t, a, b, p, copy);
 }
 
-inline  Expr* make_rec(Expr* D, Expr* tree_D,
+static inline  Expr* make_rec(Expr* D, Expr* tree_D,
                                                      Expr* t, bool copy)
 {
   return make_expr_3(REC, D, tree_D, t, copy);
 }
 
-inline  Expr* make_ind0(Expr* C, Expr* x,
+static inline  Expr* make_ind0(Expr* C, Expr* x,
                                                       bool copy)
 {
   return make_expr_2(IND0, C, x, copy);
 }
 
-inline  Expr* make_ind1(Expr* C, Expr* x, Expr* y,
+static inline  Expr* make_ind1(Expr* C, Expr* x, Expr* y,
                                                       bool copy)
 {
   return make_expr_3(IND1, C, x, y, copy);
 }
 
-inline  Expr* make_ind2(Expr* C, Expr* x, Expr* y, Expr* z,
+static inline  Expr* make_ind2(Expr* C, Expr* x, Expr* y, Expr* z,
                                                       bool copy)
 {
   return make_expr_4(IND2, C, x, y, z, copy);
