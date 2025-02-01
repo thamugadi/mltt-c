@@ -1,7 +1,8 @@
 SRC = $(wildcard src/*.c)
 HEADERS := $(wildcard src/include/*.h)
-CC=gcc
-CFLAGS := -DYYDEBUG=1 -O3 -I src/include -std=c2x -pedantic -Wall -Wextra -Wshadow -Wunreachable-code -Wno-unused-parameter
+CC=clang
+DEBUG = -ggdb -DYYDEBUG=1
+CFLAGS := -O3 -I src/include -std=c2x -pedantic -Wall -Wextra -Wshadow -Wunreachable-code -Wno-unused-parameter
 BIN := bin/mltt
 mltt: bin/mltt
 $(BIN): $(SRC) $(HEADERS) | src/parser.tab.c src/include/parser.tab.h src/lex.yy.c
