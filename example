@@ -28,9 +28,6 @@ rec0_0 C x = ind0 (id_type0_void C) x
 zero_subtr : forall (x : void), nat
 zero_subtr x = rec0_0 nat x 
 
-bar : forall (x : void), nat
-bar = zero_subtr
-
 nat0 : nat
 nat0 = tree void zero_subtr
 

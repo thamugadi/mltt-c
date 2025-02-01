@@ -1,5 +1,6 @@
 # mltt-c 
 this is a WIP implementation of a language based on Martin-Löf type theory + W-types in C. it's still poorly tested.
+
 don't hesitate to let me know if some cases wouldn't work :)
 
 **todo:**
@@ -12,6 +13,7 @@ don't hesitate to let me know if some cases wouldn't work :)
 - pretty printing (no de bruijn)
 - allowing recursive definitions
 - implementing some features on the top (pattern matching?)
+- removing the need to annotate lambdas and pairs (yet to figure how)
 
 # Usage
 ```
