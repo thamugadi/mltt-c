@@ -7,13 +7,13 @@ don't hesitate to let me know if some cases wouldn't work :)
 - W-types recursors
 - writing tests
 - writing a good readme file
+- embedded rec0, rec1, rec2
 - J-rule
 - removing memory leaks after erros
 - decent error messages
 - pretty printing (no de bruijn)
 - allowing recursive definitions
 - implementing some features on the top (pattern matching?)
-- removing the need to annotate lambdas and pairs (yet to figure how)
 
 # Usage
 ```

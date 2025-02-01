@@ -50,9 +50,9 @@ bool read_arguments(char** p, uint32_t* count)
   while (**p && **p != '=')
   {
     skip_spaces(p);
-    if (!isalpha(**p) && **p != '_') break;
+    if (!isalpha((uint8_t)**p) && **p != '_') break;
     char* start = *p;
-    while (isalnum(**p) || **p == '_') (*p)++;
+    while (isalnum((uint8_t)**p) || **p == '_') (*p)++;
     size_t len = (size_t)(*p - start);
     if (!len) break;
     ARGS[*count] = calloc(1, len + 1);
@@ -127,7 +127,7 @@ error:
     {
       p--;
       while (*p == ' ' || *p == '\n') p--;
-      while (isalnum(*p) || *p == '_') p--;
+      while (isalnum((uint8_t)*p) || *p == '_') p--;
       break;
     }
   }
