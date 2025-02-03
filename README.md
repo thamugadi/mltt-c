@@ -45,20 +45,16 @@ zero_subtr : forall (x : void), nat
 zero_subtr x = rec0_0 nat x 
 
 nat0 : nat
-nat0 = tree void zero_subtr
+nat0 = tree false zero_subtr
 
-one_subtr : forall (x : one), nat
+one_subtr : forall (x : void), nat
 one_subtr x = nat0
 
 nat1 : nat
-nat1 = tree one one_subtr
-
-take1 : forall (n : nat) (u : one), nat
-take1 n u = n
+nat1 = tree true one_subtr
 
 suc : forall (n : nat), nat
-suc n = tree one (take1 n)
+suc n = tree true (lambda x. n : (forall (u : void), nat))
 
-nat5 : nat
+nat5 : nat 
 nat5 = suc (suc (suc (suc (suc nat0))))
-```

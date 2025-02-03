@@ -330,6 +330,7 @@ Expr* type_infer_tree(Expr* tree, var_env_t* var_env)
   Expr* type_A = NULL;
   Expr* res_type = NULL;
   Expr* normal_res_type = NULL;
+  Expr* Aroot = NULL;
   var_env_t* new_env = NULL;
 
   type_C = type_infer(tree->tree.root, var_env);
@@ -348,9 +349,9 @@ Expr* type_infer_tree(Expr* tree, var_env_t* var_env)
   free_var_env_until(new_env, var_env);
 
   FAIL_IF_NOT(type_A, "todo:msg_51");
-  FAIL_IF_NOT(cmp_expr(normal_C, type_A), "todo:msg_52");
-  
-  res_type = subst_top(subtr_type->pi.cod, tree->tree.root);
+  // TODO: several checks to be done here
+
+  res_type = copy_expr(subtr_type->pi.cod);
   FAIL_IF_NOT(res_type, "todo:msg_53");
   
   normal_res_type = normalize_1(res_type, var_env);
@@ -363,6 +364,7 @@ Expr* type_infer_tree(Expr* tree, var_env_t* var_env)
   free_expr(type_A);
   return normal_res_type;
 error:
+  if (Aroot) free_expr(Aroot);
   if (new_env) free_var_env_until(new_env, var_env);
   if (type_C) free_expr(type_C);
   if (normal_C) free_expr(normal_C);
@@ -389,7 +391,17 @@ Expr* type_infer_j(Expr* j, var_env_t* var_env)
 }
 Expr* type_infer_rec(Expr* rec, var_env_t* var_env)
 {
-  todo("type_infer_rec");
+  /*
+    tree_D : Π (c : C) 
+           (subt : A(c) → W_{c:C} A(c)) 
+           (subt_D : Π (a : A(c)) D(subt(a))), 
+             D(tree(c, subt))
+  */
+
+  todo("rec");
+  
+  return NULL;
+error:
   return NULL;
 }
 Expr* type_infer_ind0(Expr* ind0, var_env_t* var_env)
@@ -599,7 +611,6 @@ Expr* type_infer(Expr* term, var_env_t* var_env)
 
 bool type_check(Expr* term, Expr* type, var_env_t* var_env)
 {
-  //TODO: free expressions before returning false
   if (term->tag == LAM)
   {
     if (type->tag != PI)
