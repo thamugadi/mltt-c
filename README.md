@@ -13,7 +13,6 @@ don't hesitate to let me know if some cases wouldn't work :)
 - removing memory leaks after erros
 - decent error messages
 - pretty printing (no de bruijn)
-- allowing recursive definitions
 - implementing some features on the top (pattern matching?)
 
 # Usage

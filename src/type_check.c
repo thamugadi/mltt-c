@@ -331,6 +331,7 @@ Expr* type_infer_tree(Expr* tree, var_env_t* var_env)
   Expr* res_type = NULL;
   Expr* normal_res_type = NULL;
   Expr* Aroot = NULL;
+  Expr* normal_Aroot = NULL;
   var_env_t* new_env = NULL;
 
   type_C = type_infer(tree->tree.root, var_env);
@@ -349,7 +350,13 @@ Expr* type_infer_tree(Expr* tree, var_env_t* var_env)
   free_var_env_until(new_env, var_env);
 
   FAIL_IF_NOT(type_A, "todo:msg_51");
-  // TODO: several checks to be done here
+  FAIL_IF_NOT(cmp_expr(normal_C, subtr_type->pi.cod->w.C), 
+              "todo:msg_52");
+  Aroot = make_app(subtr_type->pi.cod->w.family, tree->tree.root, true);
+  normal_Aroot = normalize_1(Aroot, var_env);
+  free_expr(Aroot);
+  FAIL_IF_NOT(cmp_expr(normal_Aroot, subtr_type->pi.dom), "todo:msg_521");
+  free_expr(normal_Aroot);
 
   res_type = copy_expr(subtr_type->pi.cod);
   FAIL_IF_NOT(res_type, "todo:msg_53");
@@ -365,6 +372,7 @@ Expr* type_infer_tree(Expr* tree, var_env_t* var_env)
   return normal_res_type;
 error:
   if (Aroot) free_expr(Aroot);
+  if (normal_Aroot) free_expr(normal_Aroot);
   if (new_env) free_var_env_until(new_env, var_env);
   if (type_C) free_expr(type_C);
   if (normal_C) free_expr(normal_C);
