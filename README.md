@@ -4,7 +4,7 @@ this is a WIP implementation of a language based on Martin-Löf type theory + W-
 don't hesitate to let me know if some cases wouldn't work :)
 
 **todo:**
-- fix ``tree`` and ``ind2`` type inference
+- fix ``ind2`` inference
 - W-types recursors
 - writing tests
 - writing a good readme file
