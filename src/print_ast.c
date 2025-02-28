@@ -6,235 +6,246 @@
 #include <string.h>
 #include <ast.h>
 
-void print_ast(Expr* expr)
+char* print_ast(Expr* expr)
 {
-  if (!expr) return;
+  if (!expr)
+    return NULL;
+
   if (expr->tag == DEF)
   {
-    printf("%s", expr->def.name);
-    return;
+    return strdup(expr->def.name);
   }
   if (expr->tag == VAR)
   {
-    printf("$%u", expr->var.index);
-    return;
+    char buffer[12];
+    snprintf(buffer, sizeof(buffer), "$%u", expr->var.index);
+    return strdup(buffer);
   }
   if (expr->tag == TYPE)
   {
-    printf("(Type %u)", expr->type.level);
-    return;
+    char buffer[20];
+    snprintf(buffer, sizeof(buffer), "(Type %u)", expr->type.level);
+    return strdup(buffer);
   }
   if (expr->tag == ZERO)
   {
-    printf("void");
-    return;
+    return strdup("void");
   }
   if (expr->tag == ONE)
   {
-    printf("one");
-    return;
+    return strdup("one");
   }
   if (expr->tag == UNIT)
   {
-    printf("unit");
-    return;
+    return strdup("unit");
   }
   if (expr->tag == TWO)
   {
-    printf("bool");
-    return;
+    return strdup("bool");
   }
   if (expr->tag == FALSE_T)
   {
-    printf("false");
-    return;
+    return strdup("false");
   }
   if (expr->tag == TRUE_T)
   {
-    printf("true");
-    return;
+    return strdup("true");
   }
   if (expr->tag == APP)
   {
-    printf("(");
-    print_ast(expr->ind2.C);
-    printf(" ");
-    print_ast(expr->ind2.x);
-    if (expr->ind2.y)
-    {
-      printf(" ");
-      print_ast(expr->ind2.y);
-    }
-    if (expr->ind2.z)
-    {
-      printf(" ");
-      print_ast(expr->ind2.z);
-    }
-    printf(")");
-    return;
+    char* left_str = print_ast(expr->app.left);
+    char* right_str = print_ast(expr->app.right);
+    size_t len = 3 + strlen(left_str) + strlen(right_str);
+    char* result = malloc(len + 1);
+    char* p = result;
+    *p++ = '(';
+    strcpy(p, left_str);
+    p += strlen(left_str);
+    *p++ = ' ';
+    strcpy(p, right_str);
+    p += strlen(right_str);
+    *p++ = ')';
+    *p = 0;
+    free(left_str);
+    free(right_str);
+    return result;
   }
   if (expr->tag == LAM)
   {
-    /*
-    printf("((λ. ");
-    print_ast(expr->lam.expr);
-    printf(") : ");
-    print_ast(expr->lam.type_annot);
-    printf(")");
-    */
-    printf("(λ. ");
-    print_ast(expr->lam.expr);
-    printf(")");
-    return;
+    char* expr_str = print_ast(expr->lam.expr);
+    char* result = NULL;
+    result = malloc(7 + strlen(expr_str));
+    sprintf(result, "(λ. %s)", expr_str);
+    free(expr_str);
+    return result;
   }
   if (expr->tag == PI)
   {
-    printf("(Π ");
-    print_ast(expr->pi.dom);
-    printf(", ");
-    print_ast(expr->pi.cod);
-    printf(")");
-    return;
+    char* dom_str = print_ast(expr->pi.dom);
+    char* cod_str = print_ast(expr->pi.cod);
+    char* result = NULL;
+    result = malloc(7 + strlen(dom_str) + strlen(cod_str));
+    sprintf(result, "(Π %s, %s)", dom_str, cod_str);
+    free(dom_str);
+    free(cod_str);
+    return result;
   }
   if (expr->tag == SIG)
   {
-    printf("(Σ ");
-    print_ast(expr->sig.f_ty);
-    printf(", ");
-    print_ast(expr->sig.family);
-    printf(")");
-    return;
+    char* f_ty_str = print_ast(expr->sig.f_ty);
+    char* family_str = print_ast(expr->sig.family);
+    char* result = NULL;
+    result = malloc(7 + strlen(f_ty_str) + strlen(family_str));
+    sprintf(result, "(Σ %s, %s)", f_ty_str, family_str);
+    free(f_ty_str);
+    free(family_str);
+    return result;
   }
   if (expr->tag == PAIR)
   {
-    printf("([");
-    print_ast(expr->ind2.x);
-    printf(", ");
-    print_ast(expr->ind2.y);
-    printf("] : ");
-    print_ast(expr->ind2.C);
-    printf(")");
-    return;
+    char* x_str = print_ast(expr->ind2.x);
+    char* y_str = print_ast(expr->ind2.y);
+    char* C_str = print_ast(expr->ind2.C);
+    char* result = NULL;
+    result = malloc(10 + strlen(x_str) + strlen(y_str) + strlen(C_str));
+    sprintf(result, "([%s, %s] : %s)", x_str, y_str, C_str);
+    free(x_str);
+    free(y_str);
+    free(C_str);
+    return result;
   }
   if (expr->tag == FST)
   {
-    printf("(fst ");
-    print_ast(expr->ind2.C);
-
-    printf(")");
-    return;
+    char* C_str = print_ast(expr->ind2.C);
+    char* result = NULL;
+    result = malloc(8 + strlen(C_str));
+    sprintf(result, "(fst %s)", C_str);
+    free(C_str);
+    return result;
   }
   if (expr->tag == SND)
   {
-    printf("(snd ");
-    print_ast(expr->ind2.C);
-
-    printf(")");
-    return;
+    char* C_str = print_ast(expr->ind2.C);
+    char* result = NULL;
+    result = malloc(8 + strlen(C_str));
+    sprintf(result, "(snd %s)", C_str);
+    free(C_str);
+    return result;
   }
   if (expr->tag == ID)
   {
-    printf("(eq ");
-    print_ast(expr->ind2.C);
-    printf(" ");
-    print_ast(expr->ind2.x);
-    printf(" ");
-    print_ast(expr->ind2.y);
-
-    printf(")");
-    return;
+    char* C_str = print_ast(expr->ind2.C);
+    char* x_str = print_ast(expr->ind2.x);
+    char* y_str = print_ast(expr->ind2.y);
+    char* result = NULL;
+    result = malloc(9 + strlen(C_str) + strlen(x_str) + strlen(y_str));
+    sprintf(result, "(eq %s %s %s)", C_str, x_str, y_str);
+    free(C_str);
+    free(x_str);
+    free(y_str);
+    return result;
   }
   if (expr->tag == REFL)
   {
-    printf("(refl ");
-    print_ast(expr->ind2.C);
-    printf(" ");
-    print_ast(expr->ind2.x);
-
-    printf(")");
-    return;
+    char* C_str = print_ast(expr->ind2.C);
+    char* x_str = print_ast(expr->ind2.x);
+    char* result = NULL;
+    result = malloc(9 + strlen(C_str) + strlen(x_str));
+    sprintf(result, "(refl %s %s)", C_str, x_str);
+    free(C_str);
+    free(x_str);
+    return result;
   }
   if (expr->tag == J)
   {
-    printf("(J ");
-    print_ast(expr->ind2.C);
-    printf(" ");
-    print_ast(expr->ind2.x);
-    printf(" ");
-    print_ast(expr->ind2.y);
-    printf(" ");
-    print_ast(expr->ind2.z);
-
-    printf(")");
-    return;
+    char* C_str = print_ast(expr->ind2.C);
+    char* x_str = print_ast(expr->ind2.x);
+    char* y_str = print_ast(expr->ind2.y);
+    char* z_str = print_ast(expr->ind2.z);
+    char* result = NULL;
+    result = malloc(9 + strlen(C_str) + strlen(x_str) + strlen(y_str) + strlen(z_str));
+    sprintf(result, "(J %s %s %s %s)", C_str, x_str, y_str, z_str);
+    free(C_str);
+    free(x_str);
+    free(y_str);
+    free(z_str);
+    return result;
   }
   if (expr->tag == W)
   {
-    printf("(W ");
-    print_ast(expr->ind2.C);
-    printf(" ");
-    print_ast(expr->ind2.x);
-
-    printf(")");
-    return;
+    char* C_str = print_ast(expr->ind2.C);
+    char* x_str = print_ast(expr->ind2.x);
+    char* result = NULL;
+    result = malloc(7 + strlen(C_str) + strlen(x_str));
+    sprintf(result, "(W %s %s)", C_str, x_str);
+    free(C_str);
+    free(x_str);
+    return result;
   }
   if (expr->tag == TREE)
   {
-    printf("(tree ");
-    print_ast(expr->ind2.C);
-    printf(" ");
-    print_ast(expr->ind2.x);
-
-    printf(")");
-    return;
+    char* C_str = print_ast(expr->ind2.C);
+    char* x_str = print_ast(expr->ind2.x);
+    char* result = NULL;
+    result = malloc(9 + strlen(C_str) + strlen(x_str));
+    sprintf(result, "(tree %s %s)", C_str, x_str);
+    free(C_str);
+    free(x_str);
+    return result;
   }
   if (expr->tag == REC)
   {
-    printf("(rec ");
-    print_ast(expr->ind2.C);
-    printf(" ");
-    print_ast(expr->ind2.x);
-    printf(" ");
-    print_ast(expr->ind2.y);
-
-    printf(")");
-    return;
+    char* C_str = print_ast(expr->ind2.C);
+    char* x_str = print_ast(expr->ind2.x);
+    char* y_str = print_ast(expr->ind2.y);
+    char* result = NULL;
+    result = malloc(10 + strlen(C_str) + strlen(x_str) + strlen(y_str));
+    sprintf(result, "(rec %s %s %s)", C_str, x_str, y_str);
+    free(C_str);
+    free(x_str);
+    free(y_str);
+    return result;
   }
   if (expr->tag == IND0)
   {
-    printf("(ind0 ");
-    print_ast(expr->ind2.C);
-    printf(" ");
-    print_ast(expr->ind2.x);
-
-    printf(")");
-    return;
+    char* C_str = print_ast(expr->ind2.C);
+    char* x_str = print_ast(expr->ind2.x);
+    char* result = NULL;
+    result = malloc(9 + strlen(C_str) + strlen(x_str));
+    sprintf(result, "(ind0 %s %s)", C_str, x_str);
+    free(C_str);
+    free(x_str);
+    return result;
   }
   if (expr->tag == IND1)
   {
-    printf("(ind1 ");
-    print_ast(expr->ind2.C);
-    printf(" ");
-    print_ast(expr->ind2.x);
-    printf(" ");
-    print_ast(expr->ind2.y);
-    printf(")");
-    return;
+    char* C_str = print_ast(expr->ind2.C);
+    char* x_str = print_ast(expr->ind2.x);
+    char* y_str = print_ast(expr->ind2.y);
+    char* result = NULL;
+    result = malloc(11 + strlen(C_str) + strlen(x_str) + strlen(y_str));
+    sprintf(result, "(ind1 %s %s %s)", C_str, x_str, y_str);
+    free(C_str);
+    free(x_str);
+    free(y_str);
+    return result;
   }
   if (expr->tag == IND2)
   {
-    printf("(ind2 ");
-    print_ast(expr->ind2.C);
-    printf(" ");
-    print_ast(expr->ind2.x);
-    printf(" ");
-    print_ast(expr->ind2.y);
-    printf(" ");
-    print_ast(expr->ind2.z);
-
-    printf(")");
-    return;
+    char* C_str = print_ast(expr->ind2.C);
+    char* x_str = print_ast(expr->ind2.x);
+    char* y_str = print_ast(expr->ind2.y);
+    char* z_str = print_ast(expr->ind2.z);
+    char* result = NULL;
+    result = malloc(12 + strlen(C_str) + strlen(x_str) + strlen(y_str) + strlen(z_str));
+    sprintf(result, "(ind2 %s %s %s %s)", C_str, x_str, y_str, z_str);
+    free(C_str);
+    free(x_str);
+    free(y_str);
+    free(z_str);
+    return result;
   }
-  printf("(unexpected tag: %d)", expr->tag);
-  exit(0);
+  char buffer[64];
+  snprintf(buffer, sizeof(buffer), "(unexpected tag: %d)", expr->tag);
+  return strdup(buffer);
 }

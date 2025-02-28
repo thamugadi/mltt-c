@@ -4,4 +4,4 @@
 #include <stdlib.h>
 #include <string.h>
 
-void print_ast(Expr* expr);
+char* print_ast(Expr* expr);

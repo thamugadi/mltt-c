@@ -16,14 +16,51 @@
 
 extern def_env_t sym_hashmap[HASH_SIZE];
 
+char* eval_program(char* str, int size)
+{
+  str[size] = 0;
+  remove_comments(str);
+  char** blocks = malloc(sizeof(char*));
+  int i = 0;
+  while (*str)
+  {
+    if (i) blocks = realloc(blocks, sizeof(char*) * (i + 1));
+    char* error = parse_and_eval_block(&str, &blocks[i]);
+    if (error)
+    {
+      char* errmsg = malloc(strlen(error) + 32);
+      sprintf(errmsg, "** %s failed. **\n", error);
+      for (int j = 0; j < i; j++) free(blocks[j]);
+      free(blocks);
+      return errmsg;
+    }
+    i++;
+  }
+  size_t len = 0;
+  for (int j = 0; j < i; j++) len += strlen(blocks[j]);
+  char* result = malloc(len + 1);
+  result[0] = 0;
+  for (int j = 0; j < i; j++)
+  {
+    strcat(result, blocks[j]);
+    free(blocks[j]);
+  }
+  free(blocks); 
+  return result;
+}
+void free_globals()
+{
+  for (int i = 0; i < HASH_SIZE; i++) free_def_entry(&sym_hashmap[i], false);
+}
 int main(int argc, char** argv)
 {
   char* str;
   long size;
   size_t read;
   if (argc != 2)
+  {
     return 0;
-  init_hashmap();
+  }
   FILE* fp = fopen(argv[1], "rb");
   if (!fp)
   {
@@ -43,7 +80,6 @@ int main(int argc, char** argv)
   }
   rewind(fp);
   str = malloc(size + 1);
-  char* initial_str = str;
   if (str == NULL)
   {
     fclose(fp);
@@ -56,46 +92,13 @@ int main(int argc, char** argv)
     fclose(fp);
     return EXIT_FAILURE;
   }
-  str[size] = 0;
-  fclose(fp);
-  remove_comments(str);
-
-//  char* tmp_str = str;
-  while (*str)
-  {
-    char* ident = parse_and_eval_block(&str);
-    if (!ident) continue;
-    printf("** %s failed. **\n", ident);
-    exit(0);
-/*  if (str == tmp_str)
-    {
-      printf("unexpected error (todo: make it more clear)\n");
-      break;
-    }
-    else
-    {
-      tmp_str = str;
-    }*/
-    // todo: indicate it if it failed because of a metasyntax error
-  }
-
-/*for (int i = 0; i < HASH_SIZE; i++)
-  {
-    def_env_t* entry = &sym_hashmap[i];
-    while (entry->name)
-    {
-      char* name = entry->name;
-      printf("%s : ", name);
-      print_ast(entry->type);
-      printf("\n%s = ", name);
-      print_ast(entry->term);
-      printf("\n\n");
-      if (entry->next) entry = entry->next;
-      else break; 
-    }
-  }*/
   
-  for (int i = 0; i < HASH_SIZE; i++) free_def_entry(&sym_hashmap[i], false);
-  free(initial_str);
+  init_hashmap();
+  char* eval = eval_program(str, size);
+  printf("%s", eval);
+  free(eval);
+  fclose(fp);
+  free_globals();
+  free(str);
   return 0;
 }

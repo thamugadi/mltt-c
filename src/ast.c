@@ -14,7 +14,6 @@ char* strdup(const char* s)
     return NULL;
   return (char*)memcpy(new, s, len);
 }
-
 bool cmp_expr(Expr* expr1, Expr* expr2)
 {
   bool cond1, cond2, cond3, cond4;

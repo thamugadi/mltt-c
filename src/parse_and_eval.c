@@ -16,9 +16,14 @@ char* ARGS[MAX_ARGS];
 void skip_spaces(char** s) { *s += strspn(*s, " \t\r\n\v\f"); }
 bool read_identifier(char** s, char* dst, size_t n)
 {
-  if (!isalpha((unsigned char)**s) && **s != '_') return false;
-  size_t len = 1 + strspn((*s) + 1, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_");
-  if (len >= n) return false;
+  if (!isalpha((unsigned char)**s) && **s != '_')
+    return false;
+  size_t len =
+      1 +
+      strspn((*s) + 1,
+             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_");
+  if (len >= n)
+    return false;
   memcpy(dst, *s, len);
   dst[len] = 0;
   *s += len;
@@ -50,11 +55,14 @@ bool read_arguments(char** p, uint32_t* count)
   while (**p && **p != '=')
   {
     skip_spaces(p);
-    if (!isalpha((uint8_t)**p) && **p != '_') break;
+    if (!isalpha((uint8_t) * *p) && **p != '_')
+      break;
     char* start = *p;
-    while (isalnum((uint8_t)**p) || **p == '_') (*p)++;
+    while (isalnum((uint8_t) * *p) || **p == '_')
+      (*p)++;
     size_t len = (size_t)(*p - start);
-    if (!len) break;
+    if (!len)
+      break;
     ARGS[*count] = calloc(1, len + 1);
     memcpy(ARGS[*count], start, len);
     ARGS[*count][len] = 0;
@@ -69,7 +77,7 @@ bool read_arguments(char** p, uint32_t* count)
   return true;
 }
 
-char* parse_and_eval_block(char** str)
+char* parse_and_eval_block(char** str, char** result)
 {
   static char name1[256], name2[256]; // TODO: global
   char* p = *str;
@@ -80,25 +88,35 @@ char* parse_and_eval_block(char** str)
   Expr* normal_term = NULL;
 
   skip_spaces(&p);
-  if (!read_identifier(&p, name1, sizeof(name1))) goto error;
+  if (!read_identifier(&p, name1, sizeof(name1)))
+    goto error;
   skip_spaces(&p);
-  if (*p != ':') goto error;
+  if (*p != ':')
+    goto error;
   p++;
   type = parse_line_expr(&p, 0, NULL);
-  if (!type) goto error;
+  if (!type)
+    goto error;
   skip_spaces(&p);
-  if (!read_identifier(&p, name2, sizeof(name2))) goto error;
-  if (strcmp(name1, name2)) goto error;
+  if (!read_identifier(&p, name2, sizeof(name2)))
+    goto error;
+  if (strcmp(name1, name2))
+    goto error;
   skip_spaces(&p);
-  if (!read_arguments(&p, &arg_count)) goto error;
-  if (*p != '=') goto error;
+  if (!read_arguments(&p, &arg_count))
+    goto error;
+  if (*p != '=')
+    goto error;
   p++;
   normal_type = normalize(type, NULL);
-  if (!normal_type) goto error;
+  if (!normal_type)
+    goto error;
   term = parse_line_expr(&p, arg_count, normal_type);
-  if (!term) goto error;
+  if (!term)
+    goto error;
   normal_term = normalize(term, NULL);
-  if (!normal_term) goto error;
+  if (!normal_term)
+    goto error;
   if (!type_check(normal_term, normal_type, NULL))
   {
     // TODO: make it clear it's a typecheck fail
@@ -111,23 +129,31 @@ char* parse_and_eval_block(char** str)
   *str = p;
   skip_spaces(str);
 
-  printf("%s : ", name1);
-  print_ast(get_type_hashmap(name1));
-  printf("\n%s = ", name1);
-  print_ast(get_term_hashmap(name1));
-  printf("\n\n");
+  char* type_str = print_ast(get_type_hashmap(name1));
+  char* term_str = print_ast(get_term_hashmap(name1));
+  size_t needed = snprintf(NULL, 0, "%s : %s\n%s = %s\n\n", name1, type_str,
+                           name1, term_str) +
+                  1;
+  *result = malloc(needed);
+  snprintf(*result, needed, "%s : %s\n%s = %s\n\n", name1, type_str, name1,
+           term_str);
+  free(type_str);
+  free(term_str);
 
   return NULL;
 
 error:
   while (*p)
   {
-    if (*p != ':') p++;
+    if (*p != ':')
+      p++;
     if (*p == ':')
     {
       p--;
-      while (*p == ' ' || *p == '\n') p--;
-      while (isalnum((uint8_t)*p) || *p == '_') p--;
+      while (*p == ' ' || *p == '\n')
+        p--;
+      while (isalnum((uint8_t)*p) || *p == '_')
+        p--;
       break;
     }
   }
