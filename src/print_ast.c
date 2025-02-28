@@ -84,7 +84,7 @@ char* print_ast(Expr* expr)
     char* dom_str = print_ast(expr->pi.dom);
     char* cod_str = print_ast(expr->pi.cod);
     char* result = NULL;
-    result = malloc(7 + strlen(dom_str) + strlen(cod_str));
+    result = malloc(9 + strlen(dom_str) + strlen(cod_str));
     sprintf(result, "(Π %s, %s)", dom_str, cod_str);
     free(dom_str);
     free(cod_str);
@@ -95,7 +95,7 @@ char* print_ast(Expr* expr)
     char* f_ty_str = print_ast(expr->sig.f_ty);
     char* family_str = print_ast(expr->sig.family);
     char* result = NULL;
-    result = malloc(7 + strlen(f_ty_str) + strlen(family_str));
+    result = malloc(9 + strlen(f_ty_str) + strlen(family_str));
     sprintf(result, "(Σ %s, %s)", f_ty_str, family_str);
     free(f_ty_str);
     free(family_str);

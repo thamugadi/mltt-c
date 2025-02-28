@@ -665,7 +665,7 @@ bool type_check(Expr* term, Expr* type, var_env_t* var_env)
   }
   else if (term->tag == TYPE)
   {
-    if (type->tag == TYPE && type->type.level > term->type.level)
+    if (type->tag == TYPE && type->type.level == term->type.level + 1)
     {
       return true;
     }

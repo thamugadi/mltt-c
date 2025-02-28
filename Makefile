@@ -7,7 +7,7 @@ CFLAGS := -O3 -ffast-math -I src/include -std=c2x -pedantic -Wall -Wextra -Wshad
 EXPORTED_FUNCTIONS = -s EXPORTED_FUNCTIONS='["_eval_program", "_free_globals", "_init_hashmap", "_free"]'
 EXPORTED_RUNTIME_METHODS = -s EXPORTED_RUNTIME_METHODS='["ccall", "cwrap", "stringToNewUTF8", "UTF8ToString", "lengthBytesUTF8"]'
 
-EMCCFLAGS := -g3 -s ASSERTIONS=1 -s SINGLE_FILE=1 -O3 -I src/include -std=c2x -pedantic -Wall -Wextra -Wshadow -Wunreachable-code -Wno-unused-parameter -s WASM=1 $(EXPORTED_FUNCTIONS) $(EXPORTED_RUNTIME_METHODS)
+EMCCFLAGS := -s ALLOW_MEMORY_GROWTH=1 -s SINGLE_FILE=1 -O3 -ffast-math -I src/include -std=c2x -pedantic -Wall -Wextra -Wshadow -Wunreachable-code -Wno-unused-parameter -s WASM=1 $(EXPORTED_FUNCTIONS) $(EXPORTED_RUNTIME_METHODS)
 
 BIN := bin/mltt
 mltt: bin/mltt

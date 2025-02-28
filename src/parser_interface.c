@@ -12,7 +12,7 @@ typedef struct yy_buffer_state* YY_BUFFER_STATE;
 extern int yydebug;
 YY_BUFFER_STATE yy_scan_string(const char* str);
 void yy_delete_buffer(YY_BUFFER_STATE buffer);
-void yylex_destroy(void);
+int yylex_destroy(void);
 int yyparse(var_type_stack** vts, Expr** res_expr);
 
 Expr* parse_expr(char* str, uint32_t arg_count, Expr* ty)
