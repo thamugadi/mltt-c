@@ -26,7 +26,7 @@ var_type_stack* global_save;
 %token T_REC T_IND0 T_IND1 T_IND2 T_BOTTOM T_ONE T_BOOL T_UNIT T_FALSE T_TRUE
 %token <sval> IDENT
 %token <ival> NUMBER
-
+%token APP_REC
 %parse-param { var_type_stack** vts }
 %parse-param { Expr** res_expr }
 

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <print_ast.h>
 
+// just for debug
 void print_env(var_env_t* env)
 {
   int i = 0;
@@ -17,6 +18,7 @@ void print_env(var_env_t* env)
     i++;
   }
 }
+
 int env_depth(var_env_t* env)
 {
   int d = 0;

@@ -16,6 +16,7 @@
 
 extern def_env_t sym_hashmap[HASH_SIZE];
 
+// this evaluates the whole program by dispatching blocks to parse_and_eval_block
 char* eval_program(char* str, int size)
 {
   str[size] = 0;

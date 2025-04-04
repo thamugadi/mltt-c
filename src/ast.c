@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// todo: optimize subst
-
 // this strdup definition was copypasted from somewhere
 char* strdup(const char* s)
 {
@@ -260,8 +258,8 @@ var_type_stack* add_var_stack(var_type_stack* vts, char* s, Expr* ty)
 {
   var_type_stack* new_vs = calloc(1, sizeof(var_type_stack));
   new_vs->next = vts;
-  new_vs->name = (s); // TODO: make it optional to duplicate
-  new_vs->type = (ty);
+  new_vs->name = s; // TODO: make it optional to duplicate? idk if useful
+  new_vs->type = ty;
   return new_vs;
 }
 
@@ -406,7 +404,7 @@ Expr* subst_1(Expr* expr, debruijn n, Expr* r, debruijn acc)
     }
     else if (expr->var.index > n+acc)
     {
-      // possible to optimize
+      // todo: possible to optimize
       return copy_expr(expr); 
     }
     else

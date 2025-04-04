@@ -13,11 +13,25 @@
 #include <parse_and_eval.h>
 
 char* ARGS[MAX_ARGS];
-void skip_spaces(char** s) { *s += strspn(*s, " \t\r\n\v\f"); }
+#define skip_spaces(s) *s += strspn(*s, " \t\r\n\v\f");
+
+// sends the term to parse_expr
+Expr* parse_line_expr(char** p, uint32_t arg_count, Expr* type)
+{
+  skip_spaces(p);
+  char* line_end = *p + strcspn(*p, "\n");
+  char saved = *line_end;
+  *line_end = 0;
+  Expr* expr = parse_expr(*p, arg_count, type);
+  *line_end = saved;
+  *p = *line_end ? line_end + 1 : line_end;
+  return expr;
+}
 bool read_identifier(char** s, char* dst, size_t n)
 {
   if (!isalpha((unsigned char)**s) && **s != '_')
     return false;
+  // strspn gets length of a prefix substring
   size_t len =
       1 +
       strspn((*s) + 1,
@@ -36,18 +50,6 @@ void free_args(uint32_t count)
     free(ARGS[count]);
     ARGS[count] = NULL;
   }
-}
-
-Expr* parse_line_expr(char** p, uint32_t arg_count, Expr* type)
-{
-  skip_spaces(p);
-  char* line_end = *p + strcspn(*p, "\n");
-  char saved = *line_end;
-  *line_end = 0;
-  Expr* expr = parse_expr(*p, arg_count, type);
-  *line_end = saved;
-  *p = *line_end ? line_end + 1 : line_end;
-  return expr;
 }
 
 bool read_arguments(char** p, uint32_t* count)
@@ -77,9 +79,18 @@ bool read_arguments(char** p, uint32_t* count)
   return true;
 }
 
+/*
+  this parses a block, which is of the form:
+
+  def1 : type
+  def1 args = term
+
+  by sending "def1" to read_identifier, args to read_arguments, "type" and "term" to parse_line_expr  
+  it also normalizes them, send "term" and "type" to type_check function, and adds them to the global hashmap
+ */
 char* parse_and_eval_block(char** str, char** result)
 {
-  static char name1[256], name2[256]; // TODO: global
+  static char name1[256], name2[256];
   char* p = *str;
   uint32_t arg_count = 0;
   Expr* type = NULL;
