@@ -6,7 +6,6 @@
 #include <string.h>
 
 #include <parser.tab.h>
-#include <print_ast.h>
 extern char* ARGS[MAX_ARGS];
 typedef struct yy_buffer_state* YY_BUFFER_STATE;
 extern int yydebug;
@@ -23,8 +22,6 @@ Expr* parse_expr(char* str, uint32_t arg_count, Expr* ty)
   var_type_stack* vts = NULL;
   bool first = true;
   Expr* expr_init = NULL;
-
-  print_ast(ty);
   // having arguments in a definition is translated to additional lambda terms
   for (uint32_t i = 0; i < arg_count; i++)
   {
