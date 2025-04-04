@@ -215,6 +215,7 @@ void free_expr(Expr* expr)
   free(expr);
 }
 
+// skips a pi-type
 Expr* next_pi(Expr* expr)
 {
   if (expr->tag == PI)

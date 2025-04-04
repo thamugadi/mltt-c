@@ -313,6 +313,7 @@ bool cmp_expr(Expr* ty1, Expr* ty2);
 Expr* subst_expr(Expr* expr, Expr* a, debruijn x);
 Expr* copy_expr(Expr* src);
 
+//todo: add comments on this
 typedef struct var_type_stack
 {
   char* name;

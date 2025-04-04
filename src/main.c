@@ -19,31 +19,33 @@ extern def_env_t sym_hashmap[HASH_SIZE];
 // this evaluates the whole program by dispatching blocks to parse_and_eval_block
 char* eval_program(char* str, int size)
 {
-  // todo: rewrite this, optimized
   str[size] = 0;
   remove_comments(str);
-  char** blocks = malloc(sizeof(char*));
-  int i = 0;
-  while (*str)
+  int n_blocks = 0;
+  char* str_1 = str;
+  while (*str_1) if (*str_1++ == '=') n_blocks++; // can do better to compute the number of blocks, ig 
+  
+  char** blocks = malloc(n_blocks*sizeof(char*));
+  // while (*str)
+  for (int i = 0; i < n_blocks; i++)
   {
-    if (i) blocks = realloc(blocks, sizeof(char*) * (i + 1));
+    // str gets updated to next block
+    // blocks[i] contains the resulting block
     char* error = parse_and_eval_block(&str, &blocks[i]);
     if (error)
     {
-      char* errmsg = malloc(strlen(error) + 32);
+      char* errmsg = malloc(strlen(error) + 17);
       sprintf(errmsg, "** %s failed. **\n", error);
       for (int j = 0; j < i; j++) free(blocks[j]);
       free(blocks);
       return errmsg;
     }
-    i++;
   }
-  
   size_t len = 0;
-  for (int j = 0; j < i; j++) len += strlen(blocks[j]);
+  for (int i = 0; i < n_blocks; i++) len += strlen(blocks[i]);
   char* result = malloc(len + 1);
   result[0] = 0;
-  for (int j = 0; j < i; j++)
+  for (int j = 0; j < n_blocks; j++)
   {
     strcat(result, blocks[j]);
     free(blocks[j]);
@@ -51,25 +53,24 @@ char* eval_program(char* str, int size)
   free(blocks); 
   return result;
 }
+
 void free_globals()
 {
-  for (int i = 0; i < HASH_SIZE; i++) free_def_entry(&sym_hashmap[i], false);
+  for (int i = 0; i < HASH_SIZE; i++)
+  {
+    free_def_entry(&sym_hashmap[i], false);
+  }
 }
 
-// todo: add multiple possible operations to do, not only loading a file
-int main(int argc, char** argv)
+char* get_file_str(char* filename, long* size_ptr)
 {
+  FILE* fp = fopen(filename, "rb");
   char* str;
   long size;
-  if (argc != 2)
-  {
-    return 0;
-  }
-  FILE* fp = fopen(argv[1], "rb");
   if (!fp)
   {
     perror("no such file");
-    return EXIT_FAILURE;
+    return NULL;
   }
   fseek(fp, 0, SEEK_END); 
   size = ftell(fp);
@@ -77,19 +78,37 @@ int main(int argc, char** argv)
   {
     fclose(fp);
     printf("something went wrong\n");
-    return 0;
+    return NULL;
   }
   rewind(fp);
   str = malloc(size + 1);
   fread(str, 1, size, fp);
+  fclose(fp);
+  *size_ptr = size;
+  return str;
+}
+
+// todo: add multiple possible operations to do, not only loading a file
+int main(int argc, char** argv)
+{
+  long size;
+  if (argc != 2)
+  {
+    return 0;
+  }
+
+  char* str = get_file_str(argv[1], &size);
+  if (!str)
+  {
+    return 0;
+  }
 
   init_hashmap();
   char* eval = eval_program(str, size);
   printf("%s", eval);
-
   free(eval);
-  fclose(fp);
   free_globals();
   free(str);
+
   return 0;
 }
