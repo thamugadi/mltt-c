@@ -412,6 +412,7 @@ Expr* type_infer_rec(Expr* rec, var_env_t* var_env)
 error:
   return NULL;
 }
+
 Expr* type_infer_ind0(Expr* ind0, var_env_t* var_env)
 {
   Expr* x_type = NULL;
@@ -421,15 +422,15 @@ Expr* type_infer_ind0(Expr* ind0, var_env_t* var_env)
 
   FAIL_IF_NOT((C_type->pi.dom)->tag == ZERO, "todo:msg_62");
   FAIL_IF_NOT((C_type->pi.cod)->tag == TYPE, "todo:msg_63");
+  free_expr(C_type);
   
   x_type = type_infer(ind0->ind0.x, var_env);
   FAIL_IF_NOT(x_type->tag == ZERO, "todo:msg_64");
+  free_expr(x_type);
 
   Expr* app = make_app(ind0->ind0.C, ind0->ind0.x, true);
   Expr* normal_app = normalize_1(app, var_env);
 
-  free_expr(C_type);
-  free_expr(x_type);
   free_expr(app);
   return normal_app;
 
@@ -438,6 +439,7 @@ error:
   if (x_type) free_expr(x_type);
   return NULL;
 }
+
 Expr* type_infer_ind1(Expr* ind1, var_env_t* var_env)
 {
   todo("type_infer_ind1");
@@ -455,6 +457,7 @@ Expr* type_infer_ind2(Expr* ind2, var_env_t* var_env)
   Expr* normal_C_false = NULL;
   Expr* C_true = NULL;
   Expr* normal_C_true = NULL;
+  Expr* normal_dom = NULL;
   Expr* C_z = NULL; 
 
   C_type = type_infer(ind2->ind2.C, var_env);
@@ -470,6 +473,9 @@ Expr* type_infer_ind2(Expr* ind2, var_env_t* var_env)
   
   normal_C_false = normalize_1(C_false, var_env);
   FAIL_IF_NOT(cmp_expr(x_type, normal_C_false), "todo:msg_69");
+  free_expr(normal_C_false);
+  free_expr(C_false);
+  free_expr(x_type);
   
   y_type = type_infer(ind2->ind2.y, var_env);
 
@@ -477,34 +483,32 @@ Expr* type_infer_ind2(Expr* ind2, var_env_t* var_env)
   
   normal_C_true = normalize_1(C_true, var_env);
   FAIL_IF_NOT(cmp_expr(y_type, normal_C_true), "todo:msg_70");
+  free_expr(normal_C_true);
+  free_expr(C_true);
+  free_expr(y_type);
 
   z_type = type_infer(ind2->ind2.z, var_env);
   FAIL_IF_NOT(z_type->tag == TWO, "todo:msg_71");
 
-  // some verification is missing? todo?
-  
+  normal_dom = normalize_1(C_type->pi.dom, var_env);
+  FAIL_IF_NOT(cmp_expr(z_type, normal_dom), "todo:msg_ind2err_z");
+  free_expr(normal_dom);
+  free_expr(C_type);
+  free_expr(z_type);
+
   C_z = make_app(ind2->ind2.C, ind2->ind2.z, true);
   Expr* normal_C_z = normalize_1(C_z, var_env);
 
   free_expr(C_z);
-  free_expr(C_false);
-  free_expr(C_true);
-  free_expr(normal_C_false);
-  free_expr(normal_C_true);
-  free_expr(C_type);
-  free_expr(x_type);
-  free_expr(y_type);
-  free_expr(z_type);
   return normal_C_z;
 error:
   if (C_type) free_expr(C_type);
-  if (x_type) free_expr(x_type);
-  if (y_type) free_expr(y_type);
   if (z_type) free_expr(z_type);
   if (C_false) free_expr(C_false);
   if (C_true) free_expr(C_true);
   if (normal_C_false) free_expr(normal_C_false);
   if (normal_C_true) free_expr(normal_C_true);
+  if (normal_dom) free_expr(normal_C_true);
   return NULL;
 }
 

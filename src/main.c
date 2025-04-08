@@ -42,6 +42,7 @@ char* get_file_str(char* filename, long* size_ptr)
   return str;
 }
 
+//todo
 void exec_arguments(int argc, char** argv)
 {
   int opt;
