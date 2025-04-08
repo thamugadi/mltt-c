@@ -87,10 +87,10 @@ Expr* type_infer_app(Expr* app, var_env_t* var_env)
   FAIL_IF_NOT(res, "todo:1004");
 
   res_type = subst_top(f_type->pi.cod, app->app.right);
+  free_expr(f_type);
   normal_res_type = normalize_1(res_type, var_env);
   
   free_expr(res_type);
-  free_expr(f_type);
   return normal_res_type;
 error:
   if (f_type) free_expr(f_type);
@@ -223,21 +223,19 @@ Expr* type_infer_snd(Expr* expr, var_env_t* var_env)
 
   normal_fst = normalize_1(fst_e, var_env);
   FAIL_IF_NOT(normal_fst, "todo:msg_27");
+  free_expr(fst_e);
 
   fst_e_type = type_infer(normal_fst, var_env);
   FAIL_IF_NOT(fst_e_type, "todo:msg_28");
+  free_expr(fst_e_type);
 
   family_applied = subst_top(ty_e->sig.family, normal_fst);
+  free_expr(normal_fst);
+  free_expr(ty_e);
   normal_family_applied = normalize_1(family_applied, var_env);
 
   free_expr(family_applied);
-  free_expr(fst_e_type);
-  free_expr(normal_fst);
-  free_expr(fst_e);
-  free_expr(ty_e);
-
   return normal_family_applied;
-
 
 error:
   if (family_applied) free_expr(family_applied);
@@ -288,6 +286,8 @@ error:
 
 Expr* type_infer_w(Expr* w, var_env_t* var_env)
 {
+  // todo: is something missing?
+  
   Expr* type_C = NULL;
   Expr* normal_C = NULL;
   Expr* A_type = NULL;
@@ -344,6 +344,7 @@ Expr* type_infer_tree(Expr* tree, var_env_t* var_env)
   FAIL_IF_NOT(normal_C, "todo:msg_47");
   FAIL_IF_NOT(subtr_type->tag == PI, "todo:msg_48");
   FAIL_IF_NOT(subtr_type->pi.cod->tag == W, "todo:msg_49");
+  free_expr(type_C);
 
   new_env = add_type(subtr_type->pi.cod->w.C, var_env);
   type_A = type_infer(subtr_type->pi.cod->w.family, new_env);
@@ -352,6 +353,9 @@ Expr* type_infer_tree(Expr* tree, var_env_t* var_env)
   FAIL_IF_NOT(type_A, "todo:msg_51");
   FAIL_IF_NOT(cmp_expr(normal_C, subtr_type->pi.cod->w.C), 
               "todo:msg_52");
+  free_expr(type_A);
+  free_expr(normal_C);
+  
   Aroot = make_app(subtr_type->pi.cod->w.family, tree->tree.root, true);
   normal_Aroot = normalize_1(Aroot, var_env);
   free_expr(Aroot);
@@ -360,15 +364,12 @@ Expr* type_infer_tree(Expr* tree, var_env_t* var_env)
 
   res_type = copy_expr(subtr_type->pi.cod);
   FAIL_IF_NOT(res_type, "todo:msg_53");
+  free_expr(subtr_type);
   
   normal_res_type = normalize_1(res_type, var_env);
   FAIL_IF_NOT(normal_res_type, "todo:msg_54");
 
   free_expr(res_type);
-  free_expr(type_C);
-  free_expr(normal_C);
-  free_expr(subtr_type);
-  free_expr(type_A);
   return normal_res_type;
 error:
   if (Aroot) free_expr(Aroot);

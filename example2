@@ -1,0 +1,17 @@
+id_type1 : forall (t : Type 1) (x : bool), Type 1
+id_type1 t x = t
+
+rec2_1 : forall (C : Type 1) (x : C) (y : C) (z : bool), C
+rec2_1 C x y z = ind2 (id_type1 C) x y z
+
+if_then_else : forall (A : Type 1) (B : bool) (X : A) (Y : A), A
+if_then_else A B X Y = rec2_1 A X Y B
+
+f : forall (x : bool), Type 0
+f x = if_then_else (Type 0) x bool one
+
+sum : exists (x : bool), f x
+sum = [true, unit] : exists (x : bool), f x
+
+x : one
+x = snd sum
