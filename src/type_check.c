@@ -286,8 +286,6 @@ error:
 
 Expr* type_infer_w(Expr* w, var_env_t* var_env)
 {
-  // todo: is something missing?
-  
   Expr* type_C = NULL;
   Expr* normal_C = NULL;
   Expr* A_type = NULL;
@@ -297,7 +295,9 @@ Expr* type_infer_w(Expr* w, var_env_t* var_env)
   FAIL_IF_NOT(type_C, "todo:msg_36");
   FAIL_IF_NOT(type_C->tag == TYPE, "todo:msg_37");
 
-  new_env = add_type(w->w.C, var_env);
+  normal_C = normalize_1(w->w.C, var_env);
+  new_env = add_type(normal_C, var_env);
+
   A_type = type_infer(w->w.family, new_env);
   FAIL_IF_NOT(A_type->tag == TYPE, "todo:msg_5000");
   level_t lv = (type_C->type.level > A_type->type.level)
@@ -324,6 +324,8 @@ error:
 
 Expr* type_infer_tree(Expr* tree, var_env_t* var_env)
 {
+  // todo: rewrite all of this. not clean enough and bad denomination, also probably incomplete checking
+  
   Expr* type_C = NULL;
   Expr* subtr_type = NULL;
   Expr* normal_C = NULL;
