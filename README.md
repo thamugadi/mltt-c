@@ -4,12 +4,12 @@ this is a WIP implementation of a language based on Martin-Löf type theory + W-
 don't hesitate to let me know if some cases wouldn't work :)
 
 **todo:**
-- fix ``ind2`` inference
+- fix ``tree`` inference
 - W-types recursors
 - J-rule
 - write good tests
 - write a good readme file
-- embedded rec0, rec1, rec2
+- make built-in rec0, rec1, rec2
 - remove memory leaks after errors
 - pretty printing (no de bruijn)
 - implement pattern matching on the top? 
