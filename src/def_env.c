@@ -37,6 +37,13 @@ void init_hashmap()
   memset(sym_hashmap, 0, HASH_SIZE*sizeof(def_env_t)); 
 }
 
+void free_globals()
+{
+  for (int i = 0; i < HASH_SIZE; i++)
+  {
+    free_def_entry(&sym_hashmap[i], false);
+  }
+}
 void add_to_hashmap(char* name, Expr* term, Expr* type)
 {
   uint16_t hash = hash_function(name);

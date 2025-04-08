@@ -19,6 +19,7 @@ typedef struct def_env_t
 } def_env_t;
 
 void init_hashmap();
+void free_globals();
 void add_to_hashmap(char* name, Expr* term, Expr* type);
 Expr* get_term_hashmap(char* name);
 Expr* get_type_hashmap(char* name); //todo: merge them?
