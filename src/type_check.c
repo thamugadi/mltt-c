@@ -680,6 +680,7 @@ bool type_check(Expr* term, Expr* type, var_env_t* var_env)
   }
   else
   {
+    // can be optimized? todo: read further about bidirectional
     Expr* type_inf = type_infer(term, var_env);
     if (!type_inf) return false;
     bool eq = cmp_expr(type, type_inf);

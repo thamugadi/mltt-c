@@ -42,46 +42,93 @@ char* get_file_str(char* filename, long* size_ptr)
   return str;
 }
 
-//todo
-void exec_arguments(int argc, char** argv)
+void run_repl()
+{
+  while(1);
+}
+
+int exec_arguments(int argc, char** argv)
 {
   int opt;
   char* shortopts = "hf:o:r";
-  //optarg
+  long size;
+  char* str = NULL;
+  FILE* output_fp = NULL;
+  bool repl = false;
   while ((opt = getopt(argc, argv, shortopts)) != -1)
   {
     if (opt == 'h')
     {
-      break;
+      printf("todo: help\n");
+      exit(0);
     }
     if (opt == 'f')
     {
+      str = get_file_str(optarg, &size);
     }
     if (opt == 'o')
     {
+      if (access(optarg, F_OK) == 0)
+      {
+	printf("error: file %s already exists\n", optarg);
+	exit(-1);
+      }
+      output_fp = fopen(optarg, "w");
     }
     if (opt == 'r')
     {
+      repl = true;
     }
   }
-}
-
-int main(int argc, char** argv)
-{
-  long size;
-  if (argc < 2)
+  if (repl) // never stops
   {
-    return 0;
+    if (str) free(str);
+    if (output_fp) fclose(output_fp);
+    str = NULL;
+    output_fp = NULL;
+    run_repl();
   }
 
-  char* str = get_file_str(argv[1], &size);
+  if (!str)
+  {
+    if (optind < argc)
+    {
+      str = get_file_str(argv[optind], &size);
+    }
+    else
+    {
+      if (output_fp) fclose(output_fp);
+      printf("error: no input file specified\n");
+      exit(-1);
+    }
+  }
+
   init_hashmap();
   char* eval = eval_program(str, size);
   free_globals();
   free(str);
 
-  printf("%s", eval);
-  free(eval);
-
-  return 0;
+  if (output_fp)
+  {
+    fprintf(output_fp, "%s", eval);
+    fclose(output_fp);
+    free(eval);
+    return 0;
+  }
+  else
+  {
+    printf("%s", eval);
+    free(eval);
+    return 0;
+  }
+  
+}
+int main(int argc, char** argv)
+{
+  if (argc < 2)
+  {
+    return 0;
+  }
+  int retval = exec_arguments(argc, argv);
+  return retval;
 }
