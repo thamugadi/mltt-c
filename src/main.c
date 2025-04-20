@@ -12,6 +12,7 @@
 
 #include <parser_interface.h>
 #include <parse_and_eval.h>
+#include <eval.h>
 #include <stdio.h>
 #include <ast.h>
 #include <def_env.h>
@@ -42,9 +43,46 @@ char* get_file_str(char* filename, long* size_ptr)
   return str;
 }
 
+void help()
+{
+  printf("todo: write help\n");
+}
+
 void run_repl()
 {
-  while(1);
+  // todo: improve it, add definitions etc
+  char repl_buffer[0x1000];
+  while(1)
+  {
+    fgets(repl_buffer, 0x1000, stdin);
+    Expr* expr = parse_expr(repl_buffer, 0, NULL);
+    if (!expr)
+    {
+      printf("failed.\n");
+      continue;
+    }
+    Expr* ty = type_infer(expr, NULL);
+    if (!ty)
+    {
+      printf("failed.\n");
+      free_expr(expr);
+      continue;
+    }
+    else
+    {
+      Expr* eval_expr = normalize_1(expr, NULL);
+      char* eval_expr_str = print_ast(eval_expr);
+      printf("%s", eval_expr_str);
+      free(eval_expr_str);
+      printf(" : ");
+      char* ty_str = print_ast(ty);
+      printf("%s\n", ty_str);
+      free(ty_str);
+      free_expr(ty);
+      free_expr(eval_expr);
+      free_expr(expr);
+    }
+  }
 }
 
 int exec_arguments(int argc, char** argv)
@@ -59,8 +97,8 @@ int exec_arguments(int argc, char** argv)
   {
     if (opt == 'h')
     {
-      printf("todo: help\n");
-      exit(0);
+      help();
+      return 0;
     }
     if (opt == 'f')
     {
@@ -71,7 +109,7 @@ int exec_arguments(int argc, char** argv)
       if (access(optarg, F_OK) == 0)
       {
 	printf("error: file %s already exists\n", optarg);
-	exit(-1);
+	return -1;
       }
       output_fp = fopen(optarg, "w");
     }
@@ -99,7 +137,7 @@ int exec_arguments(int argc, char** argv)
     {
       if (output_fp) fclose(output_fp);
       printf("error: no input file specified\n");
-      exit(-1);
+      return -1;
     }
   }
 
@@ -127,6 +165,7 @@ int main(int argc, char** argv)
 {
   if (argc < 2)
   {
+    help();
     return 0;
   }
   int retval = exec_arguments(argc, argv);

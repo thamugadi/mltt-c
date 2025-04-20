@@ -7,6 +7,7 @@ don't hesitate to let me know if some cases wouldn't work :)
 - fix ``tree`` inference
 - W-types recursors
 - J-rule
+- allowing writing lambdas and dependent pairs without requiring annotations (after learning about how to do that lol)
 - write good tests
 - write a good readme file
 - make built-in rec0, rec1, rec2
