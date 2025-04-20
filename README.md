@@ -5,6 +5,7 @@ don't hesitate to let me know if some cases wouldn't work :)
 
 **todo:**
 - fix ``tree`` inference
+- fix segfaults at syntax error in ``parse_expr``
 - W-types recursors
 - J-rule
 - allowing writing lambdas and dependent pairs without requiring annotations (after learning about how to do that lol)
