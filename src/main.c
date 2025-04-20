@@ -52,6 +52,7 @@ void run_repl()
 {
   // todo: improve it, add definitions etc
   char repl_buffer[0x1000];
+  init_hashmap();
   while(1)
   {
     fgets(repl_buffer, 0x1000, stdin);

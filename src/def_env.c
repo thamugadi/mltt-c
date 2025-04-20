@@ -62,9 +62,10 @@ void add_to_hashmap(char* name, Expr* term, Expr* type)
 
 Expr* get_term_hashmap(char* name)
 {
+  if (!name) return NULL;
   uint16_t hash = hash_function(name);
   def_env_t* entry = &sym_hashmap[hash];
-  if (!entry->name) return NULL;
+  if (!entry) return NULL;
   while (1)
   {
     if (!entry->name) return NULL;
@@ -77,8 +78,10 @@ Expr* get_term_hashmap(char* name)
 
 Expr* get_type_hashmap(char* name)
 {
+  if (!name) return NULL;
   uint16_t hash = hash_function(name);
   def_env_t* entry = &sym_hashmap[hash];
+  if (!entry) return NULL;
   while (1)
   {
     if (!entry->name) return NULL;
