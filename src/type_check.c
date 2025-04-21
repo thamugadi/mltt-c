@@ -28,7 +28,13 @@ Expr* type_infer_unit() { return make_one(); }
 Expr* type_infer_false() { return make_two(); }
 Expr* type_infer_true() { return make_two(); }
 
-Expr* type_infer_type(Expr* type) { return make_type(1 + type->type.level); }
+Expr* type_infer_type(Expr* type)
+{
+  FAIL_IF_NOT(type->type.level < 65535, "!!type level overflow!!");
+  return make_type(1 + type->type.level);
+error:
+  return NULL;
+}
 
 Expr* type_infer_var(Expr* var, var_env_t* var_env)
 {
