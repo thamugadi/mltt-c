@@ -24,10 +24,10 @@ uint16_t crc_16(char* name)
   crc = ~crc;
   data = crc;
   crc = (crc << 8) | (data >> 8 & 0xff);
-  #if HASH_SIZE==0x10000
+  #if HASH_SIZE<=0x10000
   return crc;
   #else
-  return crc % HASH_SIZE;
+  return crc % 0x10000;
   #endif
 }
 

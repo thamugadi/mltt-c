@@ -299,6 +299,7 @@ Expr* type_infer_w(Expr* w, var_env_t* var_env)
   new_env = add_type(normal_C, var_env);
 
   A_type = type_infer(w->w.family, new_env);
+  FAIL_IF_NOT(A_type, "todo:msg_50001");
   FAIL_IF_NOT(A_type->tag == TYPE, "todo:msg_5000");
   level_t lv = (type_C->type.level > A_type->type.level)
                    ? type_C->type.level
