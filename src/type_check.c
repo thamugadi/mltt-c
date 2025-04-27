@@ -2,14 +2,14 @@
 #include <common.h>
 #include <def_env.h>
 #include <eval.h>
+#include <print_ast.h>
 #include <type_check.h>
 #include <var_env.h>
-#include <print_ast.h>
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-//todo: free new env in error case
+// todo: free new env in error case
 
 #define FAIL_IF_NOT(cond, msg)                                                 \
   do                                                                           \
@@ -64,7 +64,7 @@ Expr* type_infer_lam(Expr* lam, var_env_t* var_env)
   FAIL_IF_NOT(normal_annot, "todo:msg_4");
   return normal_annot;
 error:
-  
+
   return NULL;
 }
 
@@ -88,20 +88,23 @@ Expr* type_infer_app(Expr* app, var_env_t* var_env)
   f_type = type_infer(app->app.left, var_env);
   FAIL_IF_NOT(f_type, "todo:1001");
   FAIL_IF_NOT(f_type->tag == PI, "todo:1002");
-  
+
   bool res = type_check(app->app.right, f_type->pi.dom, var_env);
   FAIL_IF_NOT(res, "todo:1004");
 
   res_type = subst_top(f_type->pi.cod, app->app.right);
   free_expr(f_type);
   normal_res_type = normalize_1(res_type, var_env);
-  
+
   free_expr(res_type);
   return normal_res_type;
 error:
-  if (f_type) free_expr(f_type);
-  if (res_type) free_expr(res_type);
-  if (normal_res_type) free_expr(normal_res_type);
+  if (f_type)
+    free_expr(f_type);
+  if (res_type)
+    free_expr(res_type);
+  if (normal_res_type)
+    free_expr(normal_res_type);
   return NULL;
 }
 
@@ -244,11 +247,16 @@ Expr* type_infer_snd(Expr* expr, var_env_t* var_env)
   return normal_family_applied;
 
 error:
-  if (family_applied) free_expr(family_applied);
-  if (fst_e_type) free_expr(fst_e_type);
-  if (normal_fst) free_expr(normal_fst);
-  if (fst_e) free_expr(fst_e);
-  if (ty_e) free_expr(ty_e);
+  if (family_applied)
+    free_expr(family_applied);
+  if (fst_e_type)
+    free_expr(fst_e_type);
+  if (normal_fst)
+    free_expr(normal_fst);
+  if (fst_e)
+    free_expr(fst_e);
+  if (ty_e)
+    free_expr(ty_e);
   return NULL;
 }
 
@@ -307,16 +315,15 @@ Expr* type_infer_w(Expr* w, var_env_t* var_env)
   A_type = type_infer(w->w.family, new_env);
   FAIL_IF_NOT(A_type, "todo:msg_50001");
   FAIL_IF_NOT(A_type->tag == TYPE, "todo:msg_5000");
-  level_t lv = (type_C->type.level > A_type->type.level)
-                   ? type_C->type.level
-                   : A_type->type.level;
+  level_t lv = (type_C->type.level > A_type->type.level) ? type_C->type.level
+                                                         : A_type->type.level;
   free_var_env_until(new_env, var_env);
   free_expr(type_C);
   free_expr(normal_C);
   free_expr(A_type);
 
   return make_type(lv);
-  
+
 error:
   if (new_env)
     free_var_env_until(new_env, var_env);
@@ -331,8 +338,9 @@ error:
 
 Expr* type_infer_tree(Expr* tree, var_env_t* var_env)
 {
-  // todo: rewrite all of this. not clean enough and bad denomination, also probably incomplete checking
-  
+  // todo: rewrite all of this. not clean enough and bad denomination, also
+  // probably incomplete checking
+
   Expr* type_C = NULL;
   Expr* subtr_type = NULL;
   Expr* normal_C = NULL;
@@ -360,11 +368,10 @@ Expr* type_infer_tree(Expr* tree, var_env_t* var_env)
   free_var_env_until(new_env, var_env);
 
   FAIL_IF_NOT(type_A, "todo:msg_51");
-  FAIL_IF_NOT(cmp_expr(normal_C, subtr_type->pi.cod->w.C), 
-              "todo:msg_52");
+  FAIL_IF_NOT(cmp_expr(normal_C, subtr_type->pi.cod->w.C), "todo:msg_52");
   free_expr(type_A);
   free_expr(normal_C);
-  
+
   Aroot = make_app(subtr_type->pi.cod->w.family, tree->tree.root, true);
   normal_Aroot = normalize_1(Aroot, var_env);
   free_expr(Aroot);
@@ -374,22 +381,31 @@ Expr* type_infer_tree(Expr* tree, var_env_t* var_env)
   res_type = copy_expr(subtr_type->pi.cod);
   FAIL_IF_NOT(res_type, "todo:msg_53");
   free_expr(subtr_type);
-  
+
   normal_res_type = normalize_1(res_type, var_env);
   FAIL_IF_NOT(normal_res_type, "todo:msg_54");
 
   free_expr(res_type);
   return normal_res_type;
 error:
-  if (Aroot) free_expr(Aroot);
-  if (normal_Aroot) free_expr(normal_Aroot);
-  if (new_env) free_var_env_until(new_env, var_env);
-  if (type_C) free_expr(type_C);
-  if (normal_C) free_expr(normal_C);
-  if (subtr_type) free_expr(subtr_type);
-  if (type_A) free_expr(type_A);
-  if (res_type) free_expr(res_type);
-  if (normal_res_type) free_expr(normal_res_type);
+  if (Aroot)
+    free_expr(Aroot);
+  if (normal_Aroot)
+    free_expr(normal_Aroot);
+  if (new_env)
+    free_var_env_until(new_env, var_env);
+  if (type_C)
+    free_expr(type_C);
+  if (normal_C)
+    free_expr(normal_C);
+  if (subtr_type)
+    free_expr(subtr_type);
+  if (type_A)
+    free_expr(type_A);
+  if (res_type)
+    free_expr(res_type);
+  if (normal_res_type)
+    free_expr(normal_res_type);
   return NULL;
 }
 Expr* type_infer_id(Expr* id, var_env_t* var_env)
@@ -410,14 +426,14 @@ Expr* type_infer_j(Expr* j, var_env_t* var_env)
 Expr* type_infer_rec(Expr* rec, var_env_t* var_env)
 {
   /*
-    tree_D : Π (c : C) 
-           (subt : A(c) → W_{c:C} A(c)) 
-           (subt_D : Π (a : A(c)) D(subt(a))), 
+    tree_D : Π (c : C)
+           (subt : A(c) → W_{c:C} A(c))
+           (subt_D : Π (a : A(c)) D(subt(a))),
              D(tree(c, subt))
   */
 
   todo("rec");
-  
+
   return NULL;
 error:
   return NULL;
@@ -433,7 +449,7 @@ Expr* type_infer_ind0(Expr* ind0, var_env_t* var_env)
   FAIL_IF_NOT((C_type->pi.dom)->tag == ZERO, "todo:msg_62");
   FAIL_IF_NOT((C_type->pi.cod)->tag == TYPE, "todo:msg_63");
   free_expr(C_type);
-  
+
   x_type = type_infer(ind0->ind0.x, var_env);
   FAIL_IF_NOT(x_type->tag == ZERO, "todo:msg_64");
   free_expr(x_type);
@@ -445,8 +461,10 @@ Expr* type_infer_ind0(Expr* ind0, var_env_t* var_env)
   return normal_app;
 
 error:
-  if (C_type) free_expr(C_type);
-  if (x_type) free_expr(x_type);
+  if (C_type)
+    free_expr(C_type);
+  if (x_type)
+    free_expr(x_type);
   return NULL;
 }
 
@@ -468,29 +486,29 @@ Expr* type_infer_ind2(Expr* ind2, var_env_t* var_env)
   Expr* C_true = NULL;
   Expr* normal_C_true = NULL;
   Expr* normal_dom = NULL;
-  Expr* C_z = NULL; 
+  Expr* C_z = NULL;
 
   C_type = type_infer(ind2->ind2.C, var_env);
   FAIL_IF_NOT(C_type, "todo:msg_65");
   FAIL_IF_NOT(C_type->tag == PI, "todo:msg_66");
-  
+
   FAIL_IF_NOT((C_type->pi.dom)->tag == TWO, "todo:msg_67");
   FAIL_IF_NOT((C_type->pi.cod)->tag == TYPE, "todo:msg_68");
 
   x_type = type_infer(ind2->ind2.x, var_env);
 
   C_false = make_app(copy_expr(ind2->ind2.C), make_false(), false);
-  
+
   normal_C_false = normalize_1(C_false, var_env);
   FAIL_IF_NOT(cmp_expr(x_type, normal_C_false), "todo:msg_69");
   free_expr(normal_C_false);
   free_expr(C_false);
   free_expr(x_type);
-  
+
   y_type = type_infer(ind2->ind2.y, var_env);
 
   C_true = make_app(copy_expr(ind2->ind2.C), make_true(), false);
-  
+
   normal_C_true = normalize_1(C_true, var_env);
   FAIL_IF_NOT(cmp_expr(y_type, normal_C_true), "todo:msg_70");
   free_expr(normal_C_true);
@@ -512,13 +530,20 @@ Expr* type_infer_ind2(Expr* ind2, var_env_t* var_env)
   free_expr(C_z);
   return normal_C_z;
 error:
-  if (C_type) free_expr(C_type);
-  if (z_type) free_expr(z_type);
-  if (C_false) free_expr(C_false);
-  if (C_true) free_expr(C_true);
-  if (normal_C_false) free_expr(normal_C_false);
-  if (normal_C_true) free_expr(normal_C_true);
-  if (normal_dom) free_expr(normal_C_true);
+  if (C_type)
+    free_expr(C_type);
+  if (z_type)
+    free_expr(z_type);
+  if (C_false)
+    free_expr(C_false);
+  if (C_true)
+    free_expr(C_true);
+  if (normal_C_false)
+    free_expr(normal_C_false);
+  if (normal_C_true)
+    free_expr(normal_C_true);
+  if (normal_dom)
+    free_expr(normal_C_true);
   return NULL;
 }
 
@@ -670,7 +695,7 @@ bool type_check(Expr* term, Expr* type, var_env_t* var_env)
     }
     Expr* family_app = subst_top(family, term->pair.a);
     normal_family_app = normalize_1(family_app, var_env);
-    
+
     bool res = type_check(term->pair.b, normal_family_app, var_env);
     free_expr(normal_family_app);
     free_expr(family_app);
@@ -689,9 +714,12 @@ bool type_check(Expr* term, Expr* type, var_env_t* var_env)
   {
     // can be optimized? todo: read further about bidirectional
     Expr* type_inf = type_infer(term, var_env);
-    if (!type_inf) return false;
+    if (!type_inf)
+    {
+      return false;
+    }
     bool eq = cmp_expr(type, type_inf);
     free_expr(type_inf);
     return eq;
-  } 
+  }
 }
