@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// todo: free new env in error case
+// TODO: fix the memory leaks in error cases 
 
 #define FAIL_IF_NOT(cond, msg)                                                 \
   do                                                                           \
