@@ -6,7 +6,6 @@ a web version is available here: https://aramya.neocities.org/mlttc/
 don't hesitate to let me know if some cases wouldn't work :)
 
 **todo:**
-- rewrite ast.c and related functions to manipulate ``void*`` types instead of ``Expr*``, for them to have variable length (which will be known thanks to their tag). this in order to save memory
 - fix ``tree`` inference
 - fix error handling in type inference
 - W-types recursors
