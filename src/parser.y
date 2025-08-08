@@ -62,7 +62,7 @@ atom: var_freevar | false | true | bool | one | bottom | unit | type_u | fst | s
 
 eq: T_EQ atom atom atom { $$ = make_id($2, $3, $4, false); } ;
 refl: T_REFL atom atom { $$ = make_refl($2, $3, false); };
-J: T_J atom atom atom atom { $$ = make_j($2, $3, $4, $5, false); } ;
+J: T_J atom atom atom atom atom { $$ = make_j($2, $3, $4, $5, $6, false); } ;
 tree: T_TREE atom atom { $$ = make_tree($2, $3, false); };
 rec: T_REC atom atom atom { $$ = make_rec($2, $3, $4, false); };
 ind0:T_IND0 atom atom { $$ = make_ind0($2, $3, false); };
@@ -143,8 +143,8 @@ T_LAMBDA save lambda_binders T_DOT expr T_COLON expr
     Expr* term_iter = term;
     while (count--)
     {
-        term_iter->lam.type_annot = annot;
-        term_iter = term_iter->lam.expr;
+        CAST_NAME(term_iter)->lam.type_annot = annot;
+        term_iter = CAST_NAME(term_iter)->lam.expr;
         if (count) annot = copy_expr(next_pi(annot));
     }
     free_var_stack_until(*vts, initial_vts);
@@ -237,9 +237,9 @@ push1 idents save pop1 T_COLON expr
     {
         if (!count) vts_iter->type = $6;
         else vts_iter->type = copy_expr($6);
-	if ((vts_iter->type)->tag == VAR)
+	if (CAST_NAME((vts_iter)->type)->tag == VAR)
 	{
-	    (vts_iter->type)->var.index += count;
+	    CAST_NAME(vts_iter->type)->var.index += count;
 	}
         vts_iter = vts_iter->next;
     }

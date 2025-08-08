@@ -2,7 +2,7 @@ SRC = $(wildcard src/*.c)
 HEADERS := $(wildcard src/include/*.h)
 CC=clang
 DEBUG = -ggdb -DYYDEBUG=1
-CFLAGS := -O3 -ffast-math -fno-stack-protector -no-pie  -I src/include -std=c2x -pedantic -Wall -Wextra -Wshadow -Wunreachable-code -Wno-unused-parameter -Wno-unused-label -Wno-constant-logical-operand 
+CFLAGS := -O3 -ffast-math -fno-stack-protector -no-pie  -I src/include -std=c2x -pedantic -Wall -Wextra -Wshadow -Wunreachable-code -Wno-unused-parameter -Wno-unused-label -Wno-constant-logical-operand -Wno-gnu-binary-literal 
 
 EXPORTED_FUNCTIONS = -s EXPORTED_FUNCTIONS='["_eval_program", "_free_globals", "_init_hashmap", "_free"]'
 EXPORTED_RUNTIME_METHODS = -s EXPORTED_RUNTIME_METHODS='["ccall", "cwrap", "stringToNewUTF8", "UTF8ToString", "lengthBytesUTF8"]'

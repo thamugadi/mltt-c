@@ -11,25 +11,58 @@ enum
   VAR,
   TYPE,
   ZERO, ONE, UNIT, TWO, FALSE_T, TRUE_T, 
-  APP, 
-  LAM, 
-  PI, 
-  SIG, 
-  PAIR, 
-  FST, 
-  SND,
-  ID,
-  REFL,
-  J, 
-  W,
-  TREE,
-  REC,
-  IND0,
-  IND1,
-  IND2 
+  APP = 0b01000000, 
+  LAM = 0b01000001, 
+  PI  = 0b01000010, 
+  SIG = 0b01000011, 
+  PAIR= 0b01100100, 
+  FST = 0b00100101, 
+  SND = 0b00100110,
+  ID  = 0b01100111,
+  REFL= 0b01001000,
+  J   = 0b10101001, 
+  W   = 0b01001010,
+  TREE= 0b01001011,
+  REC = 0b01101100,
+  IND0= 0b01001101,
+  IND1= 0b01101110,
+  IND2= 0b10001111, 
 };
 
-typedef struct __attribute__((packed)) Expr Expr;
+typedef void Expr;
+
+union field_1
+{
+  char* name;
+  level_t level;
+  Expr* expr_1;
+};
+
+union field_2
+{
+  debruijn index;
+  Expr* expr_2;
+};
+typedef struct __attribute__((packed)) Expr_generic
+{
+  tag_t tag;
+  union field_1 f1;
+  union field_2 f2;
+  Expr* expr_3;
+  Expr* expr_4;
+  Expr* expr_5;
+} Expr_generic;
+
+#define GET_TAG(ex) ((Expr_generic*)ex)->tag
+#define GET_NAME(ex) ((Expr_generic*)ex)->f1.name
+#define GET_INDEX(ex) ((Expr_generic*)ex)->f2.index
+#define GET_LEVEL(ex) ((Expr_generic*)ex)->f1.level
+
+#define GET_EXPR1(ex) ((Expr_generic*)ex)->f1.expr_1
+#define GET_EXPR2(ex) ((Expr_generic*)ex)->f2.expr_2
+#define GET_EXPR3(ex) ((Expr_generic*)ex)->expr_3
+#define GET_EXPR4(ex) ((Expr_generic*)ex)->expr_4
+#define GET_EXPR5(ex) ((Expr_generic*)ex)->expr_5
 
 typedef struct __attribute__((packed)) Var_data
 {
@@ -103,7 +136,8 @@ typedef struct __attribute__((packed)) Refl_data
 
 typedef struct __attribute__((packed)) J_data
 {
-  Expr* t;
+  Expr* C;
+  Expr* c;
   Expr* a;
   Expr* b;
   Expr* p;
@@ -149,7 +183,7 @@ typedef struct __attribute__((packed)) Ind2_data
   Expr* z;
 } Ind2_data;
 
-typedef struct __attribute__((packed)) Expr
+typedef struct __attribute__((packed)) Expr_named 
 {
   tag_t tag;
   union __attribute__((packed))
@@ -174,13 +208,16 @@ typedef struct __attribute__((packed)) Expr
     struct __attribute__((packed)) Ind1_data ind1;
     struct __attribute__((packed)) Ind2_data ind2;
   };
-} Expr;
+} Expr_named;
+
+#define CAST_NAME(ex) ((Expr_named*)ex)
 
 Expr* make_expr_0(tag_t tag);
 Expr* make_expr_1(tag_t tag, Expr* arg1, bool copy);
 Expr* make_expr_2(tag_t tag, Expr* arg1, Expr* arg2, bool copy);
 Expr* make_expr_3(tag_t tag, Expr* arg1, Expr* arg2, Expr* arg3, bool copy);
 Expr* make_expr_4(tag_t tag, Expr* arg1, Expr* arg2, Expr* arg3, Expr* arg4, bool copy);
+Expr* make_expr_5(tag_t tag, Expr* arg1, Expr* arg2, Expr* arg3, Expr* arg4, Expr* arg5, bool copy);
 
 Expr* make_var(debruijn debruijn, char* name, bool copy);
 Expr* make_def(char* name, bool copy);
@@ -279,9 +316,9 @@ static inline Expr* make_refl(Expr* ty, Expr* a, bool copy)
   return make_expr_2(REFL, ty, a, copy);
 }
 
-static inline Expr* make_j(Expr* t, Expr* a, Expr* b, Expr* p, bool copy)
+static inline Expr* make_j(Expr* C, Expr* c, Expr* a, Expr* b, Expr* p, bool copy)
 {
-  return make_expr_4(J, t, a, b, p, copy);
+  return make_expr_5(J, C, c, a, b, p, copy);
 }
 
 static inline Expr* make_rec(Expr* D, Expr* tree_D,

@@ -50,8 +50,8 @@ Expr* parse_expr(char* str, uint32_t arg_count, Expr* ty)
   // wrapping the type in pi-types corresponding to the added lambda abstractions 
   for (uint32_t i = arg_count; i > 0; i--)
   {
-    expr_iter->lam.type_annot = copy_expr(annot);
-    expr_iter = expr_iter->lam.expr;
+    CAST_NAME(expr_iter)->lam.type_annot = copy_expr(annot);
+    expr_iter = CAST_NAME(expr_iter)->lam.expr;
     annot = next_pi(annot);
   }
   YY_BUFFER_STATE buffer = yy_scan_string(str);
@@ -70,7 +70,7 @@ Expr* parse_expr(char* str, uint32_t arg_count, Expr* ty)
   yylex_destroy();
   if (arg_count)
   {
-    expr_init->lam.expr = expr2;
+    CAST_NAME(expr_init)->lam.expr = expr2;
     return top_expr;
   }
   else
