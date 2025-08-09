@@ -46,6 +46,9 @@ char* get_file_str(char* filename, long* size_ptr)
 void help()
 {
   printf("todo: write help\n");
+  printf("`mltt -f file (-o output)` to load a file\n");
+  printf("`mltt -r` to run REPL\n");
+  
 }
 
 void run_repl()

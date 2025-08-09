@@ -6,14 +6,14 @@ a web version is available here: https://aramya.neocities.org/mlttc/
 don't hesitate to let me know if some cases wouldn't work :)
 
 **todo:**
-- fix ``tree`` inference
-- fix error handling in type inference
 - W-types recursors
 - J-rule
+- fix ``tree`` inference
+- fix error handling in type inference
 - allowing writing lambdas and dependent pairs without requiring annotations (after learning about how to do that lol)
 - pretty printing (no de bruijn)
 - implement pattern matching on the top? 
-- decent error messages
+- write error messages
 
 # Usage
 ```
