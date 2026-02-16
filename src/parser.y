@@ -1,4 +1,8 @@
-%code requires { #include <ast.h> }
+%code requires {
+#include <ast.h>
+#include <parser_helper.h>
+};
+
 %{
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,6 +11,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <print_ast.h>
+#include <parser_helper.h>
 #include <ast.h>
     int yylex(void);
     int yyerror(struct var_type_stack** vts, Expr** res_expr, const char* s);
@@ -27,7 +32,10 @@ var_type_stack* global_save;
 %token <sval> IDENT
 %token <ival> NUMBER
 
+
+ // the parser makes massive use of a linked list that indicates the bound variables and their types 
 %parse-param { var_type_stack** vts }
+// where it puts the parsed expression
 %parse-param { Expr** res_expr }
 
 %destructor { free($$); } <sval>
@@ -55,10 +63,15 @@ var_type_stack* global_save;
 input: 
 expr { *res_expr = $1; };
 
+
 expr: expr atom { $$ = make_app($1, $2, false); } | atom;
+
+// IMPORTANT: "atom" also includes the application case. it's hidden in the "parens" one. 
+// in what follows, "expr" will be used when it's possible to write an unparenthesed expression without ambiguity
 
 atom: var_freevar | false | true | bool | one | bottom | unit | type_u | fst | snd | eq | refl | J
 | W | tree | rec | ind0 | ind1 | ind2 | exists | forall | lambda | pair | parens;
+
 
 eq: T_EQ atom atom atom { $$ = make_id($2, $3, $4, false); } ;
 refl: T_REFL atom atom { $$ = make_refl($2, $3, false); };
@@ -92,6 +105,7 @@ T_W save T_LPAREN ps_binders_1 T_RPAREN T_COMMA expr %prec TC
 exists:
 T_EXISTS save ps_binders T_COMMA expr %prec TC
 {
+    // the end of the vts before the binders for this "exists" expr were added (by ps_binders)
     var_type_stack* initial_vts = $2;
     var_type_stack* vts_iter = *vts;
     Expr* family = $5;
@@ -108,6 +122,7 @@ T_EXISTS save ps_binders T_COMMA expr %prec TC
 }
 ;
 
+// same as before
 forall:
 T_FORALL save ps_binders T_COMMA expr %prec TC
 {
@@ -130,6 +145,7 @@ T_FORALL save ps_binders T_COMMA expr %prec TC
 lambda:
 T_LAMBDA save lambda_binders T_DOT expr T_COLON expr
 {
+
     var_type_stack* initial_vts = $2;
     var_type_stack* vts_iter = *vts;
     Expr* term = $5;
@@ -233,10 +249,17 @@ push1 idents save pop1 T_COLON expr
     *vts = $3;
     var_type_stack* vts_iter = *vts;
     int count = $2;
+    // at this point, the linked list was already built with NULL pointers at
+    // the place of the type (by "idents") 
+
+    
+    // now the linked list is filled to contain each bound variable & its indicated type 
     while (count--)
     {
         if (!count) vts_iter->type = $6;
         else vts_iter->type = copy_expr($6);
+
+        // it has to account for cases like forall (T : Type 1) (x : T), ...
 	if (CAST_NAME((vts_iter)->type)->tag == VAR)
 	{
 	    CAST_NAME(vts_iter->type)->var.index += count;

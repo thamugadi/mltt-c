@@ -1,6 +1,6 @@
 SRC = $(wildcard src/*.c)
 HEADERS := $(wildcard src/include/*.h)
-CC=clang
+CC=gcc
 DEBUG = -ggdb -DYYDEBUG=1
 CFLAGS := -O3 -ffast-math -fno-stack-protector -no-pie  -I src/include -std=c2x -pedantic -Wall -Wextra -Wshadow -Wunreachable-code -Wno-unused-parameter -Wno-unused-label -Wno-constant-logical-operand -Wno-gnu-binary-literal 
 

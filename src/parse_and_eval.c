@@ -57,10 +57,10 @@ bool read_arguments(char** p, uint32_t* count)
   while (**p && **p != '=')
   {
     skip_spaces(p);
-    if (!isalpha((uint8_t) * *p) && **p != '_')
+    if (!isalpha((uint8_t)**p) && **p != '_')
       break;
     char* start = *p;
-    while (isalnum((uint8_t) * *p) || **p == '_')
+    while (isalnum((uint8_t)**p) || **p == '_')
       (*p)++;
     size_t len = (size_t)(*p - start);
     if (!len)
@@ -187,7 +187,6 @@ char* eval_program(char* str, int size)
   while (*str_1) if (*str_1++ == '=') n_blocks++; // can do better to compute the number of blocks, ig 
   
   char** blocks = malloc(n_blocks*sizeof(char*));
-  // while (*str)
   for (int i = 0; i < n_blocks; i++)
   {
     // str gets updated to next block

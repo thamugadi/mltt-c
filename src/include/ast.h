@@ -5,6 +5,9 @@
 typedef uint16_t level_t;
 typedef uint32_t debruijn;
 typedef uint8_t tag_t;
+
+// constructor >> 5 is the number of arguments that it takes
+
 enum
 {
   DEF,
@@ -43,6 +46,10 @@ union field_2
   debruijn index;
   Expr* expr_2;
 };
+
+// everything pointer to one of the datatypes below are casted with this generic one
+// to access fields in generic cases. I'm not sure if this is UB or not
+
 typedef struct __attribute__((packed)) Expr_generic
 {
   tag_t tag;
@@ -349,21 +356,6 @@ void free_expr(Expr* expr);
 bool cmp_expr(Expr* ty1, Expr* ty2);
 Expr* subst_expr(Expr* expr, Expr* a, debruijn x);
 Expr* copy_expr(Expr* src);
-
-//todo: add comments on this
-typedef struct var_type_stack
-{
-  char* name;
-  Expr* type;
-  struct var_type_stack* next;
-} var_type_stack;
-
-void free_var_stack(var_type_stack* vts);
-void free_var_stack_until(var_type_stack* vts, var_type_stack* until);
-var_type_stack* add_var_stack(var_type_stack* vts, char* s, Expr* ty);
-bool get_debruijn(var_type_stack* vts, char* s, debruijn* out);
-
-Expr* next_pi(Expr* expr);
 
 char* strdup (const char *s);
 

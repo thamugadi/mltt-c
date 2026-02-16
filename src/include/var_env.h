@@ -2,6 +2,8 @@
 #include <common.h>
 #include <ast.h>
 
+// this is the context used at typechecking. as i'm using de bruijn indices, it's just a linked list of types. 
+
 typedef struct var_env_t
 {
   Expr* expr;

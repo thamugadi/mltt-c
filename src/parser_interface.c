@@ -1,6 +1,7 @@
 #include <var_env.h>
 #include <def_env.h>
 #include <ast.h>
+#include <parser_helper.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
